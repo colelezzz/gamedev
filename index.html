@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Arcade</title>
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+
+<body>
+
+  <header>
+    <!-- Left: site logo image + "Mini Arcade" text -->
+    <div class="header-left">
+      <img class="header-logo-img" src="images/logo.png" alt="Mini Arcade Logo">
+      <span class="site-title">Mini Arcade</span>
+    </div>
+
+    <!-- Center: intentionally empty — title is now inside each section -->
+    <div class="header-center"></div>
+
+    <!-- Right: empty balance column -->
+    <div class="header-right"></div>
+  </header>
+
+  <main>
+    <div>
+      <button id="prevButton" class="wave">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <button id="nextButton" class="wave">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="section-container-main">
+      <div class="section-container">
+
+        <!-- Game 1: Tic Tac Toe -->
+        <section class="section">
+          <div class="fruit-images">
+            <div class="image-one fruit-image">
+              <img src="images/sample.png" alt="Tic Tac Toe">
+            </div>
+            <div class="image-two fruit-image">
+              <img src="images/sample.png" alt="Tic Tac Toe">
+            </div>
+            <div class="game-center-stack">
+              <h1 class="game-title">TicTacToe</h1>
+              <div class="image-center fruit-image">
+                <img src="images/logo.png" alt="Tic Tac Toe">
+              </div>
+            </div>
+            <div class="image-three fruit-image">
+              <img src="images/sample.png" alt="Tic Tac Toe">
+            </div>
+            <div class="image-four fruit-image">
+              <img src="images/sample.png" alt="Tic Tac Toe">
+            </div>
+          </div>
+          <a href="tictactoe/tictactoe.html" class="play-btn">Play Now</a>
+        </section>
+
+        <!-- Game 2: Color Guessing -->
+        <section class="section">
+          <div class="fruit-images">
+            <div class="image-one fruit-image">
+              <img src="images/sample1.png" alt="Color Guessing">
+            </div>
+            <div class="image-two fruit-image">
+              <img src="images/sample1.png" alt="Color Guessing">
+            </div>
+            <div class="game-center-stack">
+              <h1 class="game-title">Color Guessing</h1>
+              <div class="image-center fruit-image">
+                <img src="images/logo.png" alt="Color Guessing">
+              </div>
+            </div>
+            <div class="image-three fruit-image">
+              <img src="images/sample1.png" alt="Color Guessing">
+            </div>
+            <div class="image-four fruit-image">
+              <img src="images/sample1.png" alt="Color Guessing">
+            </div>
+          </div>
+          <a href="colorguessing/colorguessing.html" class="play-btn">Play Now</a>
+        </section>
+
+        <!-- Game 3: Word Scramble -->
+        <section class="section">
+          <div class="fruit-images">
+            <div class="image-one fruit-image">
+              <img src="images/sample2.png" alt="Word Scramble">
+            </div>
+            <div class="image-two fruit-image">
+              <img src="images/sample2.png" alt="Word Scramble">
+            </div>
+            <div class="game-center-stack">
+              <h1 class="game-title">Word Scramble</h1>
+              <div class="image-center fruit-image">
+                <img src="images/logo.png" alt="Word Scramble">
+              </div>
+            </div>
+            <div class="image-three fruit-image">
+              <img src="images/sample2.png" alt="Word Scramble">
+            </div>
+            <div class="image-four fruit-image">
+              <img src="images/sample2.png" alt="Word Scramble">
+            </div>
+          </div>
+          <a href="wordscramble/wordscramble.html" class="play-btn">Play Now</a>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
