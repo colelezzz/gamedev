@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,29 +9,47 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
-
 <body>
 
+  <!-- Keyboard hint tooltip -->
+  <div class="keyboard-hint" id="keyboardHint">
+    <i class="fa-solid fa-keyboard"></i>
+    <span>Use <kbd>←</kbd> <kbd>→</kbd> arrow keys to navigate</span>
+  </div>
+
+  <!-- Progress dots -->
+  <div class="progress-dots" id="progressDots">
+    <span class="dot active" data-index="0"></span>
+    <span class="dot" data-index="1"></span>
+    <span class="dot" data-index="2"></span>
+  </div>
+
+  <!-- Game counter badge -->
+  <div class="game-counter" id="gameCounter">
+    <span id="currentNum">1</span><span class="counter-sep">/</span><span>3</span>
+  </div>
+
   <header>
-    <!-- Left: site logo image + "Mini Arcade" text -->
     <div class="header-left">
       <img class="header-logo-img" src="images/logo.png" alt="Mini Arcade Logo">
       <span class="site-title">Mini Arcade</span>
     </div>
-
-    <!-- Center: intentionally empty — title is now inside each section -->
     <div class="header-center"></div>
-
-    <!-- Right: empty balance column -->
     <div class="header-right"></div>
   </header>
 
   <main>
+    <!-- Swipe hint (mobile) -->
+    <div class="swipe-hint" id="swipeHint">
+      <i class="fa-solid fa-hand-pointer"></i>
+      <span>Swipe to explore</span>
+    </div>
+
     <div>
-      <button id="prevButton" class="wave">
+      <button id="prevButton" class="nav-btn wave" aria-label="Previous game">
         <i class="fa-solid fa-chevron-left"></i>
       </button>
-      <button id="nextButton" class="wave">
+      <button id="nextButton" class="nav-btn wave" aria-label="Next game">
         <i class="fa-solid fa-chevron-right"></i>
       </button>
     </div>
@@ -41,32 +58,48 @@
       <div class="section-container">
 
         <!-- Game 1: Tic Tac Toe -->
-        <section class="section">
+        <section class="section" data-game="0">
+          <!-- Particle canvas per section -->
+          <canvas class="particle-canvas"></canvas>
+          <div class="section-bg-pattern"></div>
           <div class="fruit-images">
             <div class="image-one fruit-image">
-              <img src="images/sample.png" alt="Tic Tac Toe">
+              <img src="images/obg1.png" alt="Tic Tac Toe">
             </div>
             <div class="image-two fruit-image">
-              <img src="images/sample.png" alt="Tic Tac Toe">
+              <img src="images/obg2.png" alt="Tic Tac Toe">
             </div>
             <div class="game-center-stack">
+              <div class="game-tag">Strategy</div>
               <h1 class="game-title">TicTacToe</h1>
               <div class="image-center fruit-image">
-                <img src="images/logo.png" alt="Tic Tac Toe">
+                <img src="images/tictactoe.png" alt="Tic Tac Toe">
               </div>
+              <p class="game-desc">Classic 3×3 grid — outsmart your opponent!</p>
             </div>
             <div class="image-three fruit-image">
-              <img src="images/sample.png" alt="Tic Tac Toe">
+              <img src="images/xbg1.png" alt="Tic Tac Toe">
             </div>
             <div class="image-four fruit-image">
-              <img src="images/sample.png" alt="Tic Tac Toe">
+              <img src="images/xbg2.png" alt="Tic Tac Toe">
+            </div>
+            <div class="image-five fruit-image">
+              <img src="images/xbg3.png" alt="Tic Tac Toe">
+            </div>
+            <div class="image-six fruit-image">
+              <img src="images/obg3.png" alt="Tic Tac Toe">
             </div>
           </div>
-          <a href="tictactoe/tictactoe.html" class="play-btn">Play Now</a>
+          <a href="tictactoe/tictactoe.html" class="play-btn">
+            <span class="play-btn-icon"><i class="fa-solid fa-play"></i></span>
+            <span>Play Now</span>
+          </a>
         </section>
 
         <!-- Game 2: Color Guessing -->
-        <section class="section">
+        <section class="section" data-game="1">
+          <canvas class="particle-canvas"></canvas>
+          <div class="section-bg-pattern"></div>
           <div class="fruit-images">
             <div class="image-one fruit-image">
               <img src="images/sample1.png" alt="Color Guessing">
@@ -75,10 +108,12 @@
               <img src="images/sample1.png" alt="Color Guessing">
             </div>
             <div class="game-center-stack">
+              <div class="game-tag">Trivia</div>
               <h1 class="game-title">Color Guessing</h1>
               <div class="image-center fruit-image">
                 <img src="images/logo.png" alt="Color Guessing">
               </div>
+              <p class="game-desc">Guess the color from its RGB code!</p>
             </div>
             <div class="image-three fruit-image">
               <img src="images/sample1.png" alt="Color Guessing">
@@ -86,12 +121,23 @@
             <div class="image-four fruit-image">
               <img src="images/sample1.png" alt="Color Guessing">
             </div>
+            <div class="image-five fruit-image">
+              <img src="images/sample1.png" alt="Color Guessing">
+            </div>
+            <div class="image-six fruit-image">
+              <img src="images/sample1.png" alt="Color Guessing">
+            </div>
           </div>
-          <a href="colorguessing/colorguessing.html" class="play-btn">Play Now</a>
+          <a href="colorguessing/colorguessing.html" class="play-btn">
+            <span class="play-btn-icon"><i class="fa-solid fa-play"></i></span>
+            <span>Play Now</span>
+          </a>
         </section>
 
         <!-- Game 3: Word Scramble -->
-        <section class="section">
+        <section class="section" data-game="2">
+          <canvas class="particle-canvas"></canvas>
+          <div class="section-bg-pattern"></div>
           <div class="fruit-images">
             <div class="image-one fruit-image">
               <img src="images/sample2.png" alt="Word Scramble">
@@ -100,10 +146,12 @@
               <img src="images/sample2.png" alt="Word Scramble">
             </div>
             <div class="game-center-stack">
+              <div class="game-tag">Puzzle</div>
               <h1 class="game-title">Word Scramble</h1>
               <div class="image-center fruit-image">
                 <img src="images/logo.png" alt="Word Scramble">
               </div>
+              <p class="game-desc">Unscramble the letters to find the word!</p>
             </div>
             <div class="image-three fruit-image">
               <img src="images/sample2.png" alt="Word Scramble">
@@ -111,8 +159,17 @@
             <div class="image-four fruit-image">
               <img src="images/sample2.png" alt="Word Scramble">
             </div>
+            <div class="image-five fruit-image">
+              <img src="images/sample2.png" alt="Word Scramble">
+            </div>
+            <div class="image-six fruit-image">
+              <img src="images/sample2.png" alt="Word Scramble">
+            </div>
           </div>
-          <a href="wordscramble/wordscramble.html" class="play-btn">Play Now</a>
+          <a href="wordscramble/wordscramble.html" class="play-btn">
+            <span class="play-btn-icon"><i class="fa-solid fa-play"></i></span>
+            <span>Play Now</span>
+          </a>
         </section>
 
       </div>
@@ -121,5 +178,4 @@
 
   <script src="script.js"></script>
 </body>
-
 </html>
