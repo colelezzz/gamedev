@@ -29,6 +29,30 @@ a:focus, input:focus, button:focus, :focus-visible {
   --transition-med:  0.45s cubic-bezier(0.4, 0, 0.2, 1);
   --shadow-soft:     0 8px 32px rgba(0,0,0,0.12);
   --shadow-strong:   0 16px 56px rgba(0,0,0,0.22);
+
+  /* Game 1: TicTacToe */
+  --g1-img1: 340px;
+  --g1-img2: 300px;
+  --g1-img3: 290px;
+  --g1-img4: 360px;
+  --g1-img5: 220px;
+  --g1-img6: 250px;
+
+  /* Game 2: Color Guessing */
+  --g2-img1: 260px;
+  --g2-img2: 250px;
+  --g2-img3: 240px;
+  --g2-img4: 230px;
+  --g2-img5: 200px;
+  --g2-img6: 200px;
+
+  /* Game 3: Word Scramble */
+  --g3-img1: 280px;
+  --g3-img2: 240px;
+  --g3-img3: 240px;
+  --g3-img4: 220px;
+  --g3-img5: 200px;
+  --g3-img6: 200px;
 }
 
 /* ── Header ── */
@@ -179,14 +203,27 @@ header {
 }
 
 /* ── Center image ── */
-.image-center {
-  max-width: clamp(180px, 28vw, 500px);
-  position: relative;
-  top: unset; left: unset;
-  transform: none;
-  z-index: 5;
-  animation: none !important;
+/* Game 1: TicTacToe */
+.section[data-game="0"] .image-center img {
+  height: 350px;
+  width: auto;
+  object-fit: contain;
 }
+
+/* Game 2: Color Guessing */
+.section[data-game="1"] .image-center img {
+  height: 350px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Game 3: Word Scramble */
+.section[data-game="2"] .image-center img {
+  height: 350px;
+  width: auto;
+  object-fit: contain;
+}
+
 .image-center img {
   filter: drop-shadow(0 16px 48px rgba(0,0,0,0.28));
   transform: none !important;
@@ -201,12 +238,39 @@ header {
 .game-center-stack .image-center {
   position: relative;
 }
-.image-one   { max-width: 340px; bottom: 60px; left: 0;    transform: rotate(-10deg); }
-.image-two   { max-width: 300px; top: 8%;    left: 6%;   transform: rotate(-14deg); }
-.image-three { max-width: 270px; top: 8%;    right: 6%;  transform: rotate(14deg);  }
-.image-four  { max-width: 360px; bottom: 60px; right: 0; transform: rotate(10deg);  }
-.image-five  { max-width: 220px; top: 38%;   left: 14%;  transform: rotate(-8deg);  }
-.image-six   { max-width: 200px; top: 38%;   right: 14%; transform: rotate(8deg);   }
+
+/* Base positions (shared across all games) */
+.image-one   { bottom: 60px; left: 0;    transform: rotate(-10deg); }
+.image-two   { top: 8%;    left: 6%;   transform: rotate(-14deg); }
+.image-three { top: 8%;    right: 6%;  transform: rotate(14deg);  }
+.image-four  { bottom: 60px; right: 0; transform: rotate(10deg);  }
+.image-five  { top: 38%;   left: 14%;  transform: rotate(-8deg);  }
+.image-six   { top: 38%;   right: 14%; transform: rotate(8deg);   }
+
+/* ── Per-game floating image sizes ── */
+/* Game 1: TicTacToe */
+.section[data-game="0"] .image-one   { max-width: var(--g1-img1); }
+.section[data-game="0"] .image-two   { max-width: var(--g1-img2); }
+.section[data-game="0"] .image-three { max-width: var(--g1-img3); }
+.section[data-game="0"] .image-four  { max-width: var(--g1-img4); }
+.section[data-game="0"] .image-five  { max-width: var(--g1-img5); }
+.section[data-game="0"] .image-six   { max-width: var(--g1-img6); }
+
+/* Game 2: Color Guessing */
+.section[data-game="1"] .image-one   { max-width: var(--g2-img1); }
+.section[data-game="1"] .image-two   { max-width: var(--g2-img2); }
+.section[data-game="1"] .image-three { max-width: var(--g2-img3); }
+.section[data-game="1"] .image-four  { max-width: var(--g2-img4); }
+.section[data-game="1"] .image-five  { max-width: var(--g2-img5); }
+.section[data-game="1"] .image-six   { max-width: var(--g2-img6); }
+
+/* Game 3: Word Scramble */
+.section[data-game="2"] .image-one   { max-width: var(--g3-img1); }
+.section[data-game="2"] .image-two   { max-width: var(--g3-img2); }
+.section[data-game="2"] .image-three { max-width: var(--g3-img3); }
+.section[data-game="2"] .image-four  { max-width: var(--g3-img4); }
+.section[data-game="2"] .image-five  { max-width: var(--g3-img5); }
+.section[data-game="2"] .image-six   { max-width: var(--g3-img6); }
 
 /* ── Play Button — polished pill with icon ── */
 .play-btn {
@@ -417,7 +481,7 @@ header {
   border-radius: var(--radius-pill);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  display: none; /* shown via JS on touch devices */
+  display: none;
   align-items: center;
   gap: 8px;
   pointer-events: none;
@@ -450,67 +514,160 @@ header {
 
 /* ── Responsive ── */
 @media screen and (max-width: 1550px) {
-  .image-one   { max-width: 300px; bottom: 60px; left: 0; }
-  .image-two   { max-width: 265px; left: 4%; top: 6%; }
-  .image-three { max-width: 240px; right: 4%; top: 6%; }
-  .image-four  { max-width: 320px; bottom: 60px; right: 0; }
-  .image-five  { max-width: 195px; top: 38%; left: 12%; }
-  .image-six   { max-width: 180px; top: 38%; right: 12%; }
+  :root {
+    --g1-img1: 300px; --g1-img2: 265px; --g1-img3: 240px;
+    --g1-img4: 320px; --g1-img5: 195px; --g1-img6: 180px;
+
+    --g2-img1: 240px; --g2-img2: 210px; --g2-img3: 190px;
+    --g2-img4: 260px; --g2-img5: 155px; --g2-img6: 140px;
+
+    --g3-img1: 260px; --g3-img2: 230px; --g3-img3: 210px;
+    --g3-img4: 280px; --g3-img5: 175px; --g3-img6: 160px;
+  }
+  .image-one   { bottom: 60px; left: 0; }
+  .image-two   { left: 4%; top: 6%; }
+  .image-three { right: 4%; top: 6%; }
+  .image-four  { bottom: 60px; right: 0; }
+  .image-five  { top: 38%; left: 12%; }
+  .image-six   { top: 38%; right: 12%; }
+
+  .section[data-game="0"] .image-center img { height: 500px; }
+  .section[data-game="1"] .image-center img { height: 260px; }
+  .section[data-game="2"] .image-center img { height: 300px; }
 }
+
 @media screen and (max-width: 1199px) {
-  .image-one   { max-width: 265px; bottom: 50px; left: 0; }
-  .image-two   { max-width: 230px; left: 3%; top: 6%; }
-  .image-three { max-width: 210px; right: 3%; top: 6%; }
-  .image-four  { max-width: 280px; bottom: 50px; right: 0; }
-  .image-five  { max-width: 165px; top: 38%; left: 10%; }
-  .image-six   { max-width: 150px; top: 38%; right: 10%; }
+  :root {
+    --g1-img1: 265px; --g1-img2: 230px; --g1-img3: 210px;
+    --g1-img4: 280px; --g1-img5: 165px; --g1-img6: 150px;
+
+    --g2-img1: 210px; --g2-img2: 185px; --g2-img3: 165px;
+    --g2-img4: 220px; --g2-img5: 130px; --g2-img6: 120px;
+
+    --g3-img1: 230px; --g3-img2: 200px; --g3-img3: 180px;
+    --g3-img4: 240px; --g3-img5: 150px; --g3-img6: 135px;
+  }
+  .image-one   { bottom: 50px; left: 0; }
+  .image-two   { left: 3%; top: 6%; }
+  .image-three { right: 3%; top: 6%; }
+  .image-four  { bottom: 50px; right: 0; }
+  .image-five  { top: 38%; left: 10%; }
+  .image-six   { top: 38%; right: 10%; }
+
+  .section[data-game="0"] .image-center img { height: 420px; }
+  .section[data-game="1"] .image-center img { height: 220px; }
+  .section[data-game="2"] .image-center img { height: 260px; }
 }
+
 /* Tablet */
 @media screen and (max-width: 991px) {
+  :root {
+    --g1-img1: 200px; --g1-img2: 175px; --g1-img3: 160px;
+    --g1-img4: 210px; --g1-img5: 130px; --g1-img6: 120px;
+
+    --g2-img1: 160px; --g2-img2: 140px; --g2-img3: 125px;
+    --g2-img4: 170px; --g2-img5: 100px; --g2-img6: 95px;
+
+    --g3-img1: 175px; --g3-img2: 155px; --g3-img3: 140px;
+    --g3-img4: 185px; --g3-img5: 115px; --g3-img6: 105px;
+  }
   header        { padding: 14px 18px; }
   .nav-btn      { height: 60px; width: 60px; font-size: 20px; top: 88%; }
-  .image-one    { max-width: 200px; bottom: 100px; left: 0; }
-  .image-two    { max-width: 175px; left: 2%; top: 8%; }
-  .image-three  { max-width: 160px; right: 2%; top: 8%; }
-  .image-four   { max-width: 210px; bottom: 100px; right: 0; }
-  .image-five   { max-width: 130px; top: 40%; left: 8%; }
-  .image-six    { max-width: 120px; top: 40%; right: 8%; }
+  .image-one    { bottom: 100px; left: 0; }
+  .image-two    { left: 2%; top: 8%; }
+  .image-three  { right: 2%; top: 8%; }
+  .image-four   { bottom: 100px; right: 0; }
+  .image-five   { top: 40%; left: 8%; }
+  .image-six    { top: 40%; right: 8%; }
   .play-btn     { font-size: 15px; padding: 16px 44px; bottom: 90px; }
   .keyboard-hint { display: none; }
   .swipe-hint   { display: flex; }
+  .game-center-stack { top: 50%; }
+
+  .section[data-game="0"] .image-center img { height: 320px; }
+  .section[data-game="1"] .image-center img { height: 180px; }
+  .section[data-game="2"] .image-center img { height: 200px; }
 }
+
 /* Large phones */
 @media screen and (max-width: 767px) {
+  :root {
+    --g1-img1: 155px; --g1-img2: 135px; --g1-img3: 125px;
+    --g1-img4: 155px; --g1-img5: 0px;   --g1-img6: 0px;
+
+    --g2-img1: 125px; --g2-img2: 110px; --g2-img3: 100px;
+    --g2-img4: 125px; --g2-img5: 0px;   --g2-img6: 0px;
+
+    --g3-img1: 135px; --g3-img2: 120px; --g3-img3: 110px;
+    --g3-img4: 135px; --g3-img5: 0px;   --g3-img6: 0px;
+  }
   header        { padding: 12px 14px; }
   .nav-btn      { height: 50px; width: 50px; font-size: 18px; top: 86%; right: 14px; }
   #prevButton   { left: 14px; }
-  .image-one    { max-width: 155px; bottom: 120px; left: 0; }
-  .image-two    { max-width: 135px; left: 1%; top: 10%; }
-  .image-three  { max-width: 125px; right: 1%; top: 10%; }
-  .image-four   { max-width: 155px; bottom: 120px; right: 0; }
+  .image-one    { bottom: 120px; left: 0; }
+  .image-two    { left: 1%; top: 10%; }
+  .image-three  { right: 1%; top: 10%; }
+  .image-four   { bottom: 120px; right: 0; }
   .image-five, .image-six { display: none; }
   .play-btn     { font-size: 13px; padding: 14px 38px; letter-spacing: 2px; bottom: 80px; }
   .game-counter { top: 16px; right: 14px; }
+  .game-center-stack { top: 50%; }
+
+  .section[data-game="0"] .image-center img { height: 240px; }
+  .section[data-game="1"] .image-center img { height: 140px; }
+  .section[data-game="2"] .image-center img { height: 160px; }
 }
+
 /* Small phones */
 @media screen and (max-width: 480px) {
+  :root {
+    --g1-img1: 100px; --g1-img2: 88px; --g1-img3: 80px;
+    --g1-img4: 100px; --g1-img5: 0px;  --g1-img6: 0px;
+
+    --g2-img1: 80px;  --g2-img2: 70px; --g2-img3: 65px;
+    --g2-img4: 80px;  --g2-img5: 0px;  --g2-img6: 0px;
+
+    --g3-img1: 90px;  --g3-img2: 78px; --g3-img3: 70px;
+    --g3-img4: 90px;  --g3-img5: 0px;  --g3-img6: 0px;
+  }
   header        { padding: 10px 10px; }
   .nav-btn      { height: 44px; width: 44px; font-size: 15px; top: 84%; right: 10px; }
   #prevButton   { left: 10px; }
-  .image-one    { max-width: 100px; bottom: 110px; }
-  .image-two    { max-width: 88px;  left: 4%; top: 16%; }
-  .image-three  { max-width: 80px;  right: 4%; top: 16%; }
-  .image-four   { max-width: 100px; bottom: 110px; right: 0; }
+  .image-one    { bottom: 110px; }
+  .image-two    { left: 4%; top: 16%; }
+  .image-three  { right: 4%; top: 16%; }
+  .image-four   { bottom: 110px; right: 0; }
   .play-btn     { font-size: 12px; padding: 13px 32px; bottom: 75px; }
   .game-tag     { display: none; }
+  .game-center-stack { top: 50%; }
+
+  .section[data-game="0"] .image-center img { height: 180px; }
+  .section[data-game="1"] .image-center img { height: 110px; }
+  .section[data-game="2"] .image-center img { height: 130px; }
 }
+
 /* Extra small */
 @media screen and (max-width: 360px) {
+  :root {
+    --g1-img1: 80px; --g1-img2: 70px; --g1-img3: 65px;
+    --g1-img4: 80px; --g1-img5: 0px;  --g1-img6: 0px;
+
+    --g2-img1: 65px; --g2-img2: 58px; --g2-img3: 52px;
+    --g2-img4: 65px; --g2-img5: 0px;  --g2-img6: 0px;
+
+    --g3-img1: 72px; --g3-img2: 63px; --g3-img3: 57px;
+    --g3-img4: 72px; --g3-img5: 0px;  --g3-img6: 0px;
+  }
   header        { padding: 8px 8px; }
   .nav-btn      { height: 40px; width: 40px; font-size: 13px; }
-  .image-one    { max-width: 80px; bottom: 100px; }
-  .image-two    { max-width: 70px; left: 2%; top: 18%; }
-  .image-three  { max-width: 65px; right: 2%; top: 18%; }
-  .image-four   { max-width: 80px; bottom: 100px; }
+  .image-one    { bottom: 100px; }
+  .image-two    { left: 2%; top: 18%; }
+  .image-three  { right: 2%; top: 18%; }
+  .image-four   { bottom: 100px; }
   .play-btn     { font-size: 11px; padding: 12px 26px; bottom: 70px; }
+  .game-center-stack { top: 50%; }
+
+  .section[data-game="0"] .image-center img { height: 150px; }
+  .section[data-game="1"] .image-center img { height: 90px; }
+  .section[data-game="2"] .image-center img { height: 110px; }
 }
