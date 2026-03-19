@@ -1,37 +1,653 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Mini Arcade</title>
-    <link rel="icon" type="image/png" href="images/logo.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TicTacToe — Mini Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+<style>
+/* ── exact same reset as landing ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+a:focus, input:focus, button:focus, :focus-visible { outline:none; box-shadow:none; }
 
+/* ── exact same root tokens as landing ── */
+:root {
+  --game1-background: #c9e78a;
+  --game1-logo:       #03403f;
+  --game2-background: #ffb2b2;   /* rose — used as accent */
+  --white-color:      #ffffff;
+  --black-color:      #000000;
+  --radius-pill:      60px;
+  --transition-fast:  0.2s ease;
+  --transition-med:   0.45s cubic-bezier(0.4,0,0.2,1);
+  --shadow-soft:      0 8px 32px rgba(0,0,0,0.12);
+  --shadow-strong:    0 16px 56px rgba(0,0,0,0.22);
+
+  /* game-specific aliases used throughout */
+  --bg:     var(--game1-background);
+  --accent: var(--game2-background);
+  --logo:   var(--game1-logo);
+  --ink:    rgba(0,0,0,0.82);
+  --ink2:   rgba(0,0,0,0.5);
+  --card:   rgba(255,255,255,0.72);
+  --card-border: rgba(255,255,255,0.9);
+  --x-col:  #e85d6a;
+  --o-col:  #3daa60;
+  --font:   'Lexend', sans-serif;
+}
+
+html, body {
+  height:100%; font-family:var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* same dot-pattern as landing section-bg-pattern */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.12) 0%, transparent 50%);
+  opacity:0.8;
+}
+
+/* subtle particle-like dots */
+body::after {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.35) 1.5px, transparent 1.5px);
+  background-size: 32px 32px;
+  opacity:0.6;
+}
+
+/* ── header — same as landing ── */
+header {
+  position:fixed; top:0; left:0; width:100vw; z-index:99;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:24px 28px 16px;
+  pointer-events:none;
+}
+.header-left {
+  display:flex; align-items:center; gap:10px; flex:1; min-width:0;
+  pointer-events:all;
+}
+.btn-back {
+  display:flex; align-items:center; gap:8px;
+  font-family:var(--font); font-weight:700;
+  font-size:clamp(12px,1.3vw,15px); letter-spacing:1px;
+  color:rgba(255,255,255,0.9);
+  background:rgba(0,0,0,0.18);
+  border:1.5px solid rgba(255,255,255,0.55);
+  padding:7px 18px;
+  border-radius:var(--radius-pill);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  cursor:pointer; text-decoration:none;
+  transition:background var(--transition-fast), border-color var(--transition-fast);
+}
+.btn-back:hover {
+  background:rgba(255,255,255,0.28);
+  border-color:rgba(255,255,255,1);
+}
+
+/* game counter badge — same as landing */
+.game-badge {
+  font-family:var(--font); font-weight:700;
+  font-size:clamp(11px,1.2vw,14px); letter-spacing:2px; text-transform:uppercase;
+  color:rgba(255,255,255,0.9);
+  background:rgba(0,0,0,0.18);
+  border:1.5px solid rgba(255,255,255,0.4);
+  padding:6px 16px; border-radius:var(--radius-pill);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  pointer-events:none; white-space:nowrap;
+}
+
+/* turn chip — top right, same pill style */
+.turn-chip {
+  pointer-events:none;
+  font-family:var(--font); font-weight:700;
+  font-size:clamp(11px,1.2vw,14px); letter-spacing:1px;
+  color:rgba(255,255,255,0.92);
+  background:rgba(0,0,0,0.18);
+  border:1.5px solid rgba(255,255,255,0.55);
+  padding:6px 18px; border-radius:var(--radius-pill);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  display:inline-flex; align-items:center; gap:6px;
+  transition:background 0.3s; white-space:nowrap;
+}
+.turn-chip.cx { background:rgba(232,93,106,0.32); border-color:rgba(255,255,255,0.7); }
+.turn-chip.co { background:rgba(61,170,96,0.32);  border-color:rgba(255,255,255,0.7); }
+
+/* ── main layout ── */
+.app {
+  position:relative; z-index:1;
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:88px 1.2rem 2rem;
+}
+.shell {
+  width:100%; max-width:1000px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.2rem;
+  align-items:stretch;
+}
+@media(max-width:700px){
+  .shell { grid-template-columns:1fr; }
+  .app   { padding:80px 1rem 1.5rem; }
+}
+
+/* ── glass card — same aesthetic as landing's glass pill ── */
+.card {
+  background: rgba(255,255,255,0.52);
+  border: 2px solid rgba(255,255,255,0.88);
+  border-radius: 28px;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter:blur(16px);
+  box-shadow: var(--shadow-soft);
+  padding: 1.6rem;
+}
+
+/* ── board card ── */
+.board-card {
+  display:flex; flex-direction:column; align-items:center; gap:1rem;
+}
+
+/* status — same pill style as game-tag */
+.status-bar {
+  font-family:var(--font); font-weight:700;
+  font-size:clamp(.85rem,1.6vw,1.05rem);
+  letter-spacing:.3px;
+  color:rgba(255,255,255,0.93);
+  background:rgba(0,0,0,0.18);
+  border:1.5px solid rgba(255,255,255,0.55);
+  padding:9px 22px; border-radius:var(--radius-pill);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  width:100%; text-align:center; min-height:42px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:background .3s, border-color .3s;
+}
+.status-bar.sx { background:rgba(232,93,106,0.32); }
+.status-bar.so { background:rgba(61,170,96,0.32); }
+.status-bar.sw { background:rgba(255,255,255,0.35); animation:sbounce .4s cubic-bezier(.34,1.56,.64,1); }
+.status-bar.sd { background:rgba(0,0,0,0.18); }
+@keyframes sbounce{from{transform:scale(.92);opacity:.6;}to{transform:scale(1);opacity:1;}}
+
+/* board grid */
+#board {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:10px; width:100%; max-width:360px; margin:0 auto;
+}
+.cell {
+  aspect-ratio:1;
+  background:rgba(255,255,255,0.45);
+  border:2px solid rgba(255,255,255,0.8);
+  border-radius:18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font); font-weight:900;
+  font-size:clamp(1.6rem,4vw,2.4rem);
+  user-select:none;
+  transition:transform .12s, box-shadow .12s, background .18s;
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+}
+.cell:hover:not(.taken){
+  background:rgba(255,255,255,0.68);
+  transform:scale(1.06);
+  box-shadow:0 8px 28px rgba(0,0,0,0.16);
+}
+.cell:active:not(.taken){ transform:scale(0.97); }
+.cell.taken{ cursor:default; }
+.cell-sym{ display:inline-block; animation:sympop .28s cubic-bezier(.34,1.56,.64,1); }
+@keyframes sympop{from{transform:scale(0)rotate(-20deg);opacity:0;}to{transform:scale(1)rotate(0);opacity:1;}}
+.cell.cx-cell{ background:rgba(232,93,106,0.22); border-color:rgba(232,93,106,0.6); }
+.cell.cx-cell .cell-sym{ color:var(--x-col); }
+.cell.co-cell{ background:rgba(61,170,96,0.18); border-color:rgba(61,170,96,0.55); }
+.cell.co-cell .cell-sym{ color:var(--o-col); }
+.cell.winner{ animation:wbounce .45s cubic-bezier(.34,1.56,.64,1) forwards, wglow .7s .45s ease infinite alternate; }
+@keyframes wbounce{from{transform:scale(.85);}to{transform:scale(1.08);}}
+@keyframes wglow{
+  from{box-shadow:0 4px 16px rgba(0,0,0,0.1);}
+  to{box-shadow:0 0 0 4px rgba(255,255,255,0.7), 0 8px 32px rgba(0,0,0,0.2);}
+}
+
+/* ── sidebar card ── */
+.sidebar-card {
+  display:flex; flex-direction:column; gap:0;
+}
+.sec-block {
+  flex:1; display:flex; flex-direction:column; justify-content:center;
+  padding:.85rem 0;
+}
+.sec-block:not(:last-child){
+  border-bottom:1.5px solid rgba(255,255,255,0.5);
+}
+.sec-lbl {
+  font-size:.62rem; font-weight:800;
+  text-transform:uppercase; letter-spacing:2px;
+  color:rgba(0,0,0,0.4); margin-bottom:.55rem;
+}
+
+/* scoreboard */
+.score-grid {
+  display:grid; grid-template-columns:1fr 1fr 1fr; text-align:center;
+}
+.score-col{ display:flex; flex-direction:column; align-items:center; gap:3px; }
+.score-lbl{
+  font-size:.62rem; font-weight:800; text-transform:uppercase;
+  letter-spacing:.8px; color:rgba(0,0,0,0.4);
+  width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.score-num{
+  font-size:2.2rem; font-weight:900; line-height:1;
+  transition:transform .2s; color:var(--logo);
+}
+.score-num.bump{ animation:sbump .35s cubic-bezier(.34,1.56,.64,1); }
+@keyframes sbump{from{transform:scale(1.55);}to{transform:scale(1);}}
+.snx{ color:var(--x-col); }
+.sno{ color:var(--o-col); }
+.draw-num{ font-size:2.2rem; font-weight:900; line-height:1; color:rgba(0,0,0,0.3); }
+
+/* players */
+.name-rows{ display:flex; flex-direction:column; gap:.45rem; }
+.name-row{ display:flex; align-items:center; gap:8px; }
+.name-badge{
+  width:27px; height:27px; border-radius:8px;
+  border:2px solid rgba(255,255,255,0.9);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.9rem; font-weight:900; flex-shrink:0;
+  backdrop-filter:blur(4px);
+}
+.nbx{ background:rgba(232,93,106,0.25); color:var(--x-col); }
+.nbo{ background:rgba(61,170,96,0.22);  color:var(--o-col); }
+.name-input{
+  flex:1; min-width:0;
+  border:1.5px solid rgba(255,255,255,0.8);
+  border-radius:var(--radius-pill);
+  padding:6px 14px;
+  font-family:var(--font); font-size:.84rem; font-weight:700;
+  background:rgba(255,255,255,0.45);
+  color:var(--ink); outline:none;
+  backdrop-filter:blur(6px);
+  transition:border-color .2s, background .2s;
+}
+.name-input:focus{
+  border-color:rgba(255,255,255,1);
+  background:rgba(255,255,255,0.65);
+}
+
+/* timer */
+.timer-row{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+#timer-disp{
+  font-size:1.5rem; font-weight:800; letter-spacing:2px;
+  color:var(--logo);
+}
+.timer-btns{ display:flex; gap:.4rem; }
+
+/* theme */
+.theme-row{ display:flex; align-items:center; justify-content:space-between; }
+.theme-lbl{ font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:rgba(0,0,0,0.4); }
+.theme-sel{
+  border:1.5px solid rgba(255,255,255,0.8); border-radius:var(--radius-pill);
+  padding:5px 14px;
+  font-family:var(--font); font-size:.8rem; font-weight:700;
+  background:rgba(255,255,255,0.45); color:var(--ink);
+  cursor:pointer; outline:none;
+  backdrop-filter:blur(6px);
+}
+
+/* action buttons */
+.action-btns{ display:grid; grid-template-columns:1fr 1fr; gap:.45rem; }
+
+/* ── buttons — same pill style as play-btn ── */
+.btn {
+  font-family:var(--font); font-weight:700;
+  font-size:clamp(11px,1.2vw,13px); letter-spacing:1.5px; text-transform:uppercase;
+  padding:10px 14px;
+  border-radius:var(--radius-pill);
+  border:1.5px solid rgba(255,255,255,0.75);
+  cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:5px;
+  white-space:nowrap;
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+  transition:background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  box-shadow:0 4px 16px rgba(0,0,0,0.1);
+  color:#fff;
+}
+.btn:hover  { transform:scale(1.05) translateY(-1px); box-shadow:0 8px 28px rgba(0,0,0,0.18); border-color:rgba(255,255,255,1); }
+.btn:active { transform:scale(0.97); }
+
+.bl  { background:rgba(0,0,0,0.22); }   /* new game */
+.br  { background:rgba(232,93,106,0.45); }  /* ai */
+.bw  { background:rgba(255,255,255,0.28); color:rgba(0,0,0,0.7); border-color:rgba(255,255,255,0.7); } /* undo */
+.bc  { background:rgba(255,255,255,0.18); color:rgba(0,0,0,0.6); border-color:rgba(255,255,255,0.6); } /* reset score */
+.bsm { padding:7px 14px; font-size:.72rem; }
+
+/* confetti */
+.cp{
+  position:fixed; pointer-events:none; border-radius:2px; z-index:9999;
+  animation:cfall linear forwards;
+}
+@keyframes cfall{
+  0%  {transform:translateY(-20px)rotate(0deg);  opacity:1;}
+  100%{transform:translateY(110vh)rotate(800deg);opacity:0;}
+}
+
+/* theme overrides */
+[data-scheme="dark"] {
+  --bg: #1a2810; --logo:#8ec44a;
+  --ink: rgba(255,255,255,0.88); --ink2:rgba(255,255,255,0.5);
+}
+[data-scheme="dark"] body { background:#1a2810; }
+[data-scheme="dark"] .card { background:rgba(0,0,0,0.28); border-color:rgba(255,255,255,0.18); }
+[data-scheme="dark"] .name-input { background:rgba(0,0,0,0.25); color:#fff; }
+[data-scheme="dark"] .sec-lbl,
+[data-scheme="dark"] .score-lbl,
+[data-scheme="dark"] .theme-lbl { color:rgba(255,255,255,0.45); }
+[data-scheme="dark"] #timer-disp { color:#8ec44a; }
+[data-scheme="dark"] .draw-num   { color:rgba(255,255,255,0.3); }
+
+[data-scheme="pastel"] { --bg:#b8e4f9; --logo:#1a6080; }
+[data-scheme="pastel"] body { background:#b8e4f9; }
+
+/* responsive */
+@media(max-width:700px){
+  .sidebar-card{ height:auto; }
+  .sec-block{ flex:none; }
+  header{ padding:14px 18px; }
+}
+@media(max-width:480px){
+  .action-btns{ grid-template-columns:1fr; }
+  .score-num,.draw-num{ font-size:1.8rem; }
+}
+</style>
+</head>
 <body>
 
-    <header>
-        <!-- Left: site logo image + "Mini Arcade" text -->
-        <div class="header-left">
-            <img class="header-logo-img" src="images/logo.png" alt="Mini Arcade Logo">
-            <span class="site-title">Mini Arcade</span>
+<!-- ── header (same structure as landing) ── -->
+<header>
+  <div class="header-left">
+    <a class="btn-back" href="../index.html">
+      ← Back
+    </a>
+    <span class="game-badge">Strategy</span>
+  </div>
+  <span class="turn-chip cx" id="turn-chip">✕ Player X's Turn</span>
+</header>
+
+<!-- ── game ── -->
+<div class="app">
+  <div class="shell">
+
+    <!-- board -->
+    <div class="card board-card">
+      <div class="status-bar sx" id="status">Player X's turn</div>
+      <div id="board"></div>
+    </div>
+
+    <!-- sidebar -->
+    <div class="card sidebar-card">
+
+      <div class="sec-block">
+        <div class="sec-lbl">Scoreboard</div>
+        <div class="score-grid">
+          <div class="score-col">
+            <div class="score-lbl" id="lbl-x">Player X</div>
+            <div class="score-num snx" id="sc-x">0</div>
+          </div>
+          <div class="score-col">
+            <div class="score-lbl">Draws</div>
+            <div class="draw-num" id="sc-d">0</div>
+          </div>
+          <div class="score-col">
+            <div class="score-lbl" id="lbl-o">Player O</div>
+            <div class="score-num sno" id="sc-o">0</div>
+          </div>
         </div>
+      </div>
 
-        <!-- Center: intentionally empty — title is now inside each section -->
-        <div class="header-center"></div>
+      <div class="sec-block">
+        <div class="sec-lbl">Players</div>
+        <div class="name-rows">
+          <div class="name-row">
+            <div class="name-badge nbx">X</div>
+            <input class="name-input" id="nx" type="text" value="Player X" maxlength="14">
+          </div>
+          <div class="name-row">
+            <div class="name-badge nbo">O</div>
+            <input class="name-input" id="no" type="text" value="Player O" maxlength="14">
+          </div>
+        </div>
+      </div>
 
-        <!-- Right: empty balance column -->
-        <div class="header-right"></div>
-    </header>
+      <div class="sec-block">
+        <div class="sec-lbl">Timer</div>
+        <div class="timer-row">
+          <span id="timer-disp">⏱ 00:00</span>
+          <div class="timer-btns">
+            <button class="btn bl bsm" id="btn-ts">▶</button>
+            <button class="btn bw bsm" id="btn-tp">⏸</button>
+            <button class="btn bc bsm" id="btn-tr">↺</button>
+          </div>
+        </div>
+      </div>
 
-    <main>
+      <div class="sec-block">
+        <div class="theme-row">
+          <span class="theme-lbl">Theme</span>
+          <select class="theme-sel" id="scheme">
+            <option value="default">🌿 Default</option>
+            <option value="dark">🌙 Dark</option>
+            <option value="pastel">🌸 Pastel</option>
+          </select>
+        </div>
+      </div>
 
-    </main>
+      <div class="sec-block">
+        <div class="sec-lbl">Actions</div>
+        <div class="action-btns">
+          <button class="btn bl" id="btn-new">✦ New Game</button>
+          <button class="btn bw" id="btn-undo">↩ Undo</button>
+          <button class="btn br" id="btn-ai">🤖 AI Move</button>
+          <button class="btn bc" id="btn-rs">🗑 Reset Score</button>
+        </div>
+      </div>
 
-    <script src="script.js"></script>
+    </div>
+  </div>
+</div>
+
+<script>
+let board=Array(9).fill(''),cur='X',active=true,hist=[],scores={X:0,O:0,D:0};
+let tInt=null,elapsed=0,tStart=0;
+const WINS=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+const $board=$('#board'),$status=$('#status'),$chip=$('#turn-chip');
+const $scX=$('#sc-x'),$scO=$('#sc-o'),$scD=$('#sc-d');
+const $lblX=$('#lbl-x'),$lblO=$('#lbl-o');
+const $nx=$('#nx'),$no=$('#no');
+const $tDisp=$('#timer-disp'),$scheme=$('#scheme');
+
+function $(id){ return document.getElementById(id); }
+/* re-assign after function declaration */
+const board_el=document.getElementById('board'),
+      status_el=document.getElementById('status'),
+      chip_el=document.getElementById('turn-chip'),
+      scX_el=document.getElementById('sc-x'),
+      scO_el=document.getElementById('sc-o'),
+      scD_el=document.getElementById('sc-d'),
+      lblX_el=document.getElementById('lbl-x'),
+      lblO_el=document.getElementById('lbl-o'),
+      nx_el=document.getElementById('nx'),
+      no_el=document.getElementById('no'),
+      tDisp_el=document.getElementById('timer-disp'),
+      scheme_el=document.getElementById('scheme');
+
+const nameX=()=>nx_el.value.trim()||'Player X';
+const nameO=()=>no_el.value.trim()||'Player O';
+
+function build(){
+  board_el.innerHTML='';
+  for(let i=0;i<9;i++){
+    const c=document.createElement('div');
+    c.className='cell'; c.dataset.i=i;
+    c.addEventListener('click',onClick);
+    board_el.appendChild(c);
+  }
+}
+
+function onClick(e){
+  const i=+e.currentTarget.dataset.i;
+  if(board[i]||!active)return;
+  move(i);
+}
+
+function move(i){
+  board[i]=cur; hist.push(i);
+  const cell=board_el.children[i];
+  cell.classList.add('taken',cur==='X'?'cx-cell':'co-cell');
+  cell.innerHTML=`<span class="cell-sym">${cur}</span>`;
+  check();
+}
+
+function check(){
+  for(const[a,b,c]of WINS){
+    if(board[a]&&board[a]===board[b]&&board[a]===board[c]){
+      active=false; stopTimer();
+      [board_el.children[a],board_el.children[b],board_el.children[c]]
+        .forEach(el=>el.classList.add('winner'));
+      scores[cur]++; bump(cur); syncScores();
+      const n=cur==='X'?nameX():nameO();
+      setStatus('sw',`🎉 ${n} wins!`);
+      setChip('',`🏆 ${n}!`);
+      confetti(); return;
+    }
+  }
+  if(!board.includes('')){
+    active=false; stopTimer(); scores.D++; syncScores();
+    setStatus('sd','🤝 Draw!'); setChip('','🤝 Draw!'); return;
+  }
+  cur=cur==='X'?'O':'X';
+  if(!canWin()){
+    active=false; stopTimer();
+    setStatus('sd','😅 No winning moves!'); setChip('','⛔ Stuck!'); return;
+  }
+  updateStatus();
+}
+
+function canWin(){
+  for(const[a,b,c]of WINS){
+    const v=[board[a],board[b],board[c]];
+    if(v.includes('')&&!(v.includes('X')&&v.includes('O')))return true;
+  }
+  return false;
+}
+
+function updateStatus(){
+  const n=cur==='X'?nameX():nameO();
+  const sym=cur==='X'?'✕':'○';
+  setStatus(cur==='X'?'sx':'so',`${sym} ${n}'s turn`);
+  setChip(cur==='X'?'cx':'co',`${sym} ${n}'s Turn`);
+}
+
+function setStatus(cls,msg){status_el.className='status-bar '+cls;status_el.textContent=msg;}
+function setChip(cls,msg){chip_el.className='turn-chip '+cls;chip_el.textContent=msg;}
+
+function newGame(){
+  board=Array(9).fill(''); cur='X'; active=true; hist=[];
+  [...board_el.children].forEach(c=>{c.className='cell';c.innerHTML='';});
+  resetTimer(); updateStatus();
+}
+
+function undo(){
+  if(!hist.length||!active)return;
+  const i=hist.pop(); board[i]='';
+  const c=board_el.children[i]; c.className='cell'; c.innerHTML='';
+  cur=cur==='X'?'O':'X'; updateStatus();
+}
+
+function aiMove(){
+  if(!active)return;
+  const r=minimax([...board],cur,true,0);
+  if(r.idx!==-1)move(r.idx);
+}
+function minimax(b,p,isMax,d){
+  for(const[a,bx,c]of WINS)
+    if(b[a]&&b[a]===b[bx]&&b[a]===b[c])
+      return{score:b[a]===cur?10-d:d-10,idx:-1};
+  const emp=b.reduce((a,v,i)=>v===''?[...a,i]:a,[]);
+  if(!emp.length)return{score:0,idx:-1};
+  let best=isMax?{score:-Infinity,idx:-1}:{score:Infinity,idx:-1};
+  for(const i of emp){
+    b[i]=p;
+    const r=minimax(b,p==='X'?'O':'X',!isMax,d+1);
+    b[i]='';
+    if(isMax?r.score>best.score:r.score<best.score)best={score:r.score,idx:i};
+  }
+  return best;
+}
+
+function syncScores(){scX_el.textContent=scores.X;scO_el.textContent=scores.O;scD_el.textContent=scores.D;}
+function bump(p){
+  const el=p==='X'?scX_el:scO_el;
+  el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
+  setTimeout(()=>el.classList.remove('bump'),400);
+}
+function resetScores(){scores={X:0,O:0,D:0};syncScores();}
+
+function syncNames(){lblX_el.textContent=nameX();lblO_el.textContent=nameO();if(active)updateStatus();}
+nx_el.addEventListener('input',syncNames);
+no_el.addEventListener('input',syncNames);
+
+function startTimer(){
+  if(tInt)return;
+  tStart=Date.now()-elapsed;
+  tInt=setInterval(()=>{
+    elapsed=Date.now()-tStart;
+    const s=Math.floor(elapsed/1000);
+    tDisp_el.textContent=`⏱ ${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  },500);
+}
+function stopTimer(){clearInterval(tInt);tInt=null;}
+function resetTimer(){stopTimer();elapsed=0;tDisp_el.textContent='⏱ 00:00';}
+
+function confetti(){
+  const cols=['#c9e78a','#ffb2b2','#ffd700','#a8d455','#e85d6a','#3daa60','#ffffff','#ffd6a5'];
+  for(let i=0;i<65;i++)setTimeout(()=>{
+    const el=document.createElement('div');
+    el.className='cp';
+    const sz=6+Math.random()*10;
+    el.style.cssText=`left:${Math.random()*100}vw;top:-12px;
+      width:${sz}px;height:${sz*(Math.random()>.45?1:2.2)}px;
+      background:${cols[~~(Math.random()*cols.length)]};
+      border-radius:${Math.random()>.4?'50%':'3px'};
+      border:1.5px solid rgba(255,255,255,0.4);
+      animation-duration:${2+Math.random()*2}s;
+      animation-delay:${Math.random()*.4}s;`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),5000);
+  },i*22);
+}
+
+scheme_el.addEventListener('change',e=>{
+  document.documentElement.setAttribute('data-scheme',e.target.value);
+  localStorage.setItem('ttt-scheme',e.target.value);
+});
+
+document.getElementById('btn-new').addEventListener('click',newGame);
+document.getElementById('btn-undo').addEventListener('click',undo);
+document.getElementById('btn-ai').addEventListener('click',aiMove);
+document.getElementById('btn-rs').addEventListener('click',resetScores);
+document.getElementById('btn-ts').addEventListener('click',startTimer);
+document.getElementById('btn-tp').addEventListener('click',stopTimer);
+document.getElementById('btn-tr').addEventListener('click',resetTimer);
+
+(()=>{
+  const s=localStorage.getItem('ttt-scheme')||'default';
+  document.documentElement.setAttribute('data-scheme',s);
+  scheme_el.value=s;
+  build(); updateStatus();
+})();
+</script>
 </body>
-
 </html>
