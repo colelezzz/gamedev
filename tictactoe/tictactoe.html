@@ -4,12 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TicTacToe — Mini Arcade</title>
-<link rel="icon" type="image/png" href="images/logo.png">
+<link rel="icon" type="image/png" href="../images/tictactoe.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 a:focus, input:focus, button:focus, :focus-visible { outline:none; box-shadow:none; }
+
+/* ── CUSTOM SCROLLBAR ── */
+::-webkit-scrollbar { width:5px; height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb {
+  background:rgba(3,64,63,0.35);
+  border-radius:99px;
+  transition:background .2s;
+}
+::-webkit-scrollbar-thumb:hover { background:rgba(3,64,63,0.6); }
+ 
+[data-scheme="dark"] ::-webkit-scrollbar-thumb { background:rgba(142,196,74,0.35); }
+[data-scheme="dark"] ::-webkit-scrollbar-thumb:hover { background:rgba(142,196,74,0.65); }
+ 
+* { scrollbar-width:thin; scrollbar-color:rgba(3,64,63,0.35) transparent; }
+[data-scheme="dark"] * { scrollbar-color:rgba(142,196,74,0.35) transparent; }
 
 :root {
   --game1-background: #c9e78a;
@@ -104,9 +120,9 @@ header {
   gap:1.5rem;
   align-items:stretch;
 }
-@media(max-width:760px){
+@media(max-width:1024px){
   .shell { grid-template-columns:1fr; }
-  .app   { padding:90px 1rem 1.5rem; }
+  .app   { padding:90px 1.2rem 1.5rem; }
 }
 
 .card {
@@ -341,7 +357,7 @@ header {
 [data-scheme="dark"] .ring-bg { stroke:rgba(255,255,255,0.15); }
 [data-scheme="dark"] .timer-detail { color:rgba(255,255,255,0.4); }
 
-@media(max-width:760px){
+@media(max-width:1024px){
   .sidebar-card{ height:auto; }
   .sec-block{ flex:none; }
   header{ padding:12px 18px; }
