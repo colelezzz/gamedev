@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
+
 <body>
 
   <!-- Keyboard hint tooltip -->
@@ -58,7 +60,7 @@
       <div class="section-container">
 
         <!-- Game 1: Tic Tac Toe -->
-        <section class="section" data-game="0">
+        <section class="section" data-game="0" id="section-1">
           <!-- Particle canvas per section -->
           <canvas class="particle-canvas"></canvas>
           <div class="section-bg-pattern"></div>
@@ -97,7 +99,7 @@
         </section>
 
         <!-- Game 2: Color Guessing -->
-        <section class="section" data-game="1">
+        <section class="section" data-game="1" id="section-2">
           <canvas class="particle-canvas"></canvas>
           <div class="section-bg-pattern"></div>
           <div class="fruit-images">
@@ -128,14 +130,14 @@
               <img src="images/art6.png" alt="Color Guessing">
             </div>
           </div>
-          <a href="colorguessing/colorguessing.html" class="play-btn">
+          <a href="colorguessing/coloraccuracy.html" class="play-btn">
             <span class="play-btn-icon"><i class="fa-solid fa-play"></i></span>
             <span>Play Now</span>
           </a>
         </section>
 
         <!-- Game 3: Word Scramble -->
-        <section class="section" data-game="2">
+        <section class="section" data-game="2" id="section-3">
           <canvas class="particle-canvas"></canvas>
           <div class="section-bg-pattern"></div>
           <div class="fruit-images">
@@ -178,4 +180,5 @@
 
   <script src="script.js"></script>
 </body>
+
 </html>
