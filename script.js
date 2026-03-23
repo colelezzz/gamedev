@@ -37,22 +37,20 @@ function initParticles(canvas) {
   let W, H, particles;
 
   function resize() {
-    // Use getBoundingClientRect for reliable dimensions even before full paint.
-    // Fall back to window size if the canvas isn't laid out yet (offsetWidth = 0).
     const rect = canvas.getBoundingClientRect();
     W = canvas.width  = rect.width  || window.innerWidth;
     H = canvas.height = rect.height || window.innerHeight;
   }
 
   function createParticles() {
-    const count = Math.floor((W * H) / 7500); // good density without overcrowding
+    const count = Math.floor((W * H) / 7500);
     particles = Array.from({ length: count }, () => ({
       x:  Math.random() * W,
       y:  Math.random() * H,
-      r:  Math.random() * 6 + 3,          // 3–9px — readable circles
+      r:  Math.random() * 6 + 3,
       dx: (Math.random() - 0.5) * 0.35,
       dy: (Math.random() - 0.5) * 0.35,
-      a:  Math.random() * 0.22 + 0.1      // 0.1–0.32 — subtle but visible
+      a:  Math.random() * 0.22 + 0.1
     }));
   }
 
@@ -79,7 +77,6 @@ function initParticles(canvas) {
   window.addEventListener("resize", () => { resize(); createParticles(); });
 }
 
-// Defer until after first paint so canvas has real dimensions
 requestAnimationFrame(() => {
   document.querySelectorAll(".particle-canvas").forEach(c => initParticles(c));
 });
@@ -93,44 +90,19 @@ function floatOne(el) {
     y: gsap.utils.random(-16, 16),
     duration: gsap.utils.random(2.5, 3.8),
     ease: "sine.inOut",
-    onComplete: () => floatOne(el)   // new destination each cycle
+    onComplete: () => floatOne(el)
   });
 }
 
-// Start floating only for a specific section's images
 function startFloatingSection(sectionIndex, delay) {
   sectionImgs[sectionIndex].forEach((el, i) => {
     gsap.delayedCall((delay || 0) + i * 0.18, () => floatOne(el));
   });
 }
 
-// Kill floating only for a specific section's images
 function killFloatingSection(sectionIndex) {
   sectionImgs[sectionIndex].forEach(el => gsap.killTweensOf(el));
 }
-
-/* ════════════════════════════════════════════
-   INITIAL ENTRANCE (section 0 only)
-   ════════════════════════════════════════════ */
-gsap.from(sectionImgs[0], {
-  y: -window.innerHeight,
-  stagger: 0.08,
-  delay: 0.3,
-  duration: 0.7,
-  ease: "power2.out",
-  onComplete: () => startFloatingSection(0, 0)
-});
-
-gsap.from(".game-center-stack", {
-  y: -window.innerHeight,
-  delay: 0.3,
-  duration: 0.75,
-  ease: "power3.out"
-});
-
-gsap.from([".game-counter", ".keyboard-hint", ".swipe-hint", ".progress-dots"], {
-  opacity: 0, delay: 1.2, duration: 0.6
-});
 
 /* ════════════════════════════════════════════
    HINTS
@@ -167,27 +139,21 @@ function navigateTo(targetIndex) {
   const prevIndex    = currentIndex;
   currentIndex       = targetIndex;
 
-  // 1. Slide the container
   sectionContainer.style.left = `${-currentIndex * 100}%`;
 
-  // 2. Update header colour
   gsap.to(siteTitle, { color: logoColors[currentIndex], duration: 0.7 });
 
-  // 3. Kill floats on the OLD section only
   killFloatingSection(prevIndex);
 
-  // 4. Get only THIS section's decorative images
   const imgs = sectionImgs[currentIndex];
-
-  // 5. Kill any stale tweens on these images, then drop them in
   imgs.forEach(el => gsap.killTweensOf(el));
 
+  // Animate decorative images
   gsap.fromTo(imgs,
     { x: 0, y: goingForward ? -window.innerHeight * 0.6 : window.innerHeight * 0.6, opacity: 0 },
     {
       x: 0, y: 0, opacity: 1,
       stagger: { each: 0.08, onComplete: function() {
-        // Start floating each image individually right after IT lands
         floatOne(this.targets()[0]);
       }},
       delay: 0.1,
@@ -196,7 +162,16 @@ function navigateTo(targetIndex) {
     }
   );
 
-  // 6. Animate the center stack title/desc/tag
+  // Animate center stack (logo + title + desc)
+  const centerStack = sections[currentIndex]?.querySelector(".game-center-stack");
+  if (centerStack) {
+    gsap.killTweensOf(centerStack);
+    gsap.fromTo(centerStack,
+      { y: goingForward ? -window.innerHeight * 0.6 : window.innerHeight * 0.6, opacity: 0 },
+      { y: 0, opacity: 1, delay: 0.1, duration: 0.75, ease: "power3.out" }
+    );
+  }
+
   const title = sections[currentIndex]?.querySelector(".game-title");
   const desc  = sections[currentIndex]?.querySelector(".game-desc");
   const tag   = sections[currentIndex]?.querySelector(".game-tag");
@@ -265,10 +240,98 @@ document.addEventListener("touchend", e => {
 }, { passive: true });
 
 /* ════════════════════════════════════════════
-   INIT
+   INIT — hash check MUST run before entrance
+   animations so we know which section to show
    ════════════════════════════════════════════ */
+
+// Detect if we're coming back from a game page
+const _hash     = window.location.hash;
+const _hashEl   = _hash ? document.querySelector(_hash) : null;
+const _hashGame = _hashEl ? parseInt(_hashEl.dataset.game, 10) : -1;
+const _fromHash = !isNaN(_hashGame) && _hashGame > 0 && _hashGame < TOTAL_GAMES;
+
+if (_fromHash) {
+  // ── BACK-NAVIGATE BRANCH ─────────────────────
+  // Set state before any animations fire
+  currentIndex = _hashGame;
+
+  // Jump container instantly — no CSS slide
+  sectionContainer.style.transition = "none";
+  sectionContainer.style.left = `${-currentIndex * 100}%`;
+  sectionContainer.offsetWidth; // force reflow
+  sectionContainer.style.transition = "";
+
+  gsap.set(siteTitle, { color: logoColors[currentIndex] });
+
+  // All sections start fully visible at natural CSS state —
+  // entrance animations below are scoped so they won't touch them
+  sections.forEach((sec, i) => {
+    sectionImgs[i].forEach(img => gsap.set(img, { clearProps: "all" }));
+    gsap.set(sec.querySelector(".game-center-stack"), { clearProps: "all" });
+  });
+
+  // Drop in ONLY the target section's images from top
+  gsap.fromTo(
+    sectionImgs[currentIndex],
+    { y: -window.innerHeight, opacity: 0 },
+    {
+      y: 0, opacity: 1,
+      stagger: 0.08, delay: 0.3, duration: 0.7, ease: "power2.out",
+      onComplete: () => startFloatingSection(currentIndex, 0)
+    }
+  );
+
+  // Drop in ONLY the target section's center stack
+  gsap.fromTo(
+    sections[currentIndex].querySelector(".game-center-stack"),
+    { y: -window.innerHeight, opacity: 0 },
+    { y: 0, opacity: 1, delay: 0.3, duration: 0.75, ease: "power3.out" }
+  );
+
+  // Fade in UI chrome
+  gsap.from([".game-counter", ".keyboard-hint", ".swipe-hint", ".progress-dots"], {
+    opacity: 0, delay: 1.2, duration: 0.6
+  });
+
+  // Clean up hash so a manual refresh lands on slide 1
+  history.replaceState(null, "", window.location.pathname);
+
+} else {
+  // ── NORMAL FIRST-LOAD BRANCH ─────────────────
+
+  // Set ALL sections' images and center stacks to hidden initial state.
+  // They will only animate in when navigateTo() is called for that section.
+  sections.forEach((sec, i) => {
+    gsap.set(sec.querySelector(".game-center-stack"), { y: -window.innerHeight, opacity: 0 });
+    sectionImgs[i].forEach(img => gsap.set(img, { y: -window.innerHeight, opacity: 0 }));
+  });
+
+  // Animate section 0 images drop-in
+  gsap.to(sectionImgs[0], {
+    y: 0, opacity: 1,
+    stagger: 0.08,
+    delay: 0.3,
+    duration: 0.7,
+    ease: "power2.out",
+    onComplete: () => startFloatingSection(0, 0)
+  });
+
+  // Animate section 0 center stack drop-in
+  gsap.to(sections[0].querySelector(".game-center-stack"), {
+    y: 0, opacity: 1,
+    delay: 0.3,
+    duration: 0.75,
+    ease: "power3.out"
+  });
+
+  gsap.from([".game-counter", ".keyboard-hint", ".swipe-hint", ".progress-dots"], {
+    opacity: 0, delay: 1.2, duration: 0.6
+  });
+}
+
+// Always run last — currentIndex is already correct by this point
 updateNavButtons();
-updateDots(0);
+updateDots(currentIndex);
 
 if ("ontouchstart" in window) {
   if (swipeHint)    swipeHint.style.display    = "flex";
