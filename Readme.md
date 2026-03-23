@@ -21,8 +21,8 @@
 | Logo | Game | Description |
 |------|------|-------------|
 | <img src="images/tictactoe.png" width="48"/> | **Tic Tac Toe** | Classic two-player X and O strategy game |
-| <img src="images/game2-logo.png" width="48"/> | **Color Guessing** | Guess the correct color from its RGB value |
-| <img src="images/game3-logo.png" width="48"/> | **Word Scramble** | Unscramble the jumbled letters to find the word |
+| <img src="images/guessing game.png" width="48"/> | **Color Guessing** | Guess the correct color from its RGB value |
+| <img src="images/word scramble.png" width="48"/> | **Word Scramble** | Unscramble the jumbled letters to find the word |
 
 ---
 
@@ -57,12 +57,15 @@ mini-arcade/
 ├── script.js
 ├── images/
 │   ├── logo.png
-│   ├── sample.png        # Tic Tac Toe art
-│   ├── sample1.png       # Color Guessing art
-│   └── sample2.png       # Word Scramble art
+│   ├── tictactoe.png        # Tic Tac Toe art
+│   ├── guessinggame.png       # Color Guessing art
+│   └── wordscramble.png       # Word Scramble art
 ├── tictactoe/
+    ├── tictactoe.html
 ├── colorguessing/
+    ├── coloraccuracy.html
 └── wordscramble/
+    ├── wordscramble.html
 ```
 
 ---
@@ -76,9 +79,7 @@ mini-arcade/
 ## 🔮 Future Improvements
 
 - [ ] Local leaderboard via `localStorage`
-- [ ] Touch/swipe support for mobile carousel
 - [ ] More games — Snake, Memory Match, Reaction Timer
-- [ ] Keyboard arrow navigation
 
 ---
 
