@@ -57,22 +57,30 @@ mini-arcade/
 ├── script.js
 ├── images/
 │   ├── logo.png
-│   ├── tictactoe.png        # Tic Tac Toe art
-│   ├── guessinggame.png       # Color Guessing art
-│   └── wordscramble.png       # Word Scramble art
+│   ├── tictactoe.png        
+│   ├── guessinggame.png       
+│   └── wordscramble.png       
 ├── tictactoe/
-    ├── tictactoe.html
+    └── tictactoe.html
 ├── colorguessing/
-    ├── coloraccuracy.html
+    └── coloraccuracy.html
 └── wordscramble/
-    ├── wordscramble.html
+    └── wordscramble.html
 ```
 
 ---
 
 ## 📸 Screenshots
 
-> `[ Add screenshot here ]`
+### 🎠 Home — Game Carousel
+| Tic Tac Toe | Color Guessing | Word Scramble |
+|-------------|----------------|---------------|
+| <img src="images/tictactoe1.png" width="250" height="150"/> | <img src="images/coloraccuracy1.png" width="250" height="150"/> | <img src="images/wordscramble1.png" width="250" height="150"/> |
+
+### 🎮 Gameplay
+| Tic Tac Toe | Color Guessing |
+|-------------|----------------|
+| <img src="images/tictactoe2.png" width="370" height="220"/> | <img src="images/coloraccuracy2.png" width="370" height="220"/> |
 
 ---
 
