@@ -21,8 +21,8 @@
 | Logo | Game | Description |
 |------|------|-------------|
 | <img src="images/tictactoe.png" width="48"/> | **Tic Tac Toe** | Classic two-player X and O strategy game |
-| <img src="images/guessing game.png" width="48"/> | **Color Guessing** | Guess the correct color from its RGB value |
-| <img src="images/word scramble.png" width="48"/> | **Word Scramble** | Unscramble the jumbled letters to find the word |
+| <img src="images/guessingGame.png" width="48"/> | **Color Guessing** | Guess the correct color from its RGB value |
+| <img src="images/wordScramble.png" width="48"/> | **Word Scramble** | Unscramble the jumbled letters to find the word |
 
 ---
 
@@ -75,12 +75,12 @@ mini-arcade/
 ### 🎠 Home — Game Carousel
 | Tic Tac Toe | Color Guessing | Word Scramble |
 |-------------|----------------|---------------|
-| <img src="images/tictactoe1.png" width="250" height="150"/> | <img src="images/coloraccuracy1.png" width="250" height="150"/> | <img src="images/wordscramble1.png" width="250" height="150"/> |
+| <img src="images/tictactoe1.png" width="250" height="150"/> | <img src="images/colorAccuracy1.png" width="250" height="150"/> | <img src="images/wordScramble1.png" width="250" height="150"/> |
 
 ### 🎮 Gameplay
-| Tic Tac Toe | Color Guessing |
-|-------------|----------------|
-| <img src="images/tictactoe2.png" width="370" height="220"/> | <img src="images/coloraccuracy2.png" width="370" height="220"/> |
+| Tic Tac Toe | Color Guessing | Word Scramble |
+|-------------|----------------|---------------|
+| <img src="images/tictactoe2.png" width="250" height="150"/> | <img src="images/colorAccuracy2.png" width="250" height="150"/> | <img src="images/wordScramble2.png" width="250" height="150"/> |
 
 ---
 
