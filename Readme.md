@@ -62,10 +62,16 @@ mini-arcade/
 │   └── wordscramble.png       
 ├── tictactoe/
     └── tictactoe.html
+    └── style.css
+    └── script.js
 ├── colorguessing/
     └── coloraccuracy.html
+    └── style.css
+    └── script.js
 └── wordscramble/
     └── wordscramble.html
+    └── style.css
+    └── script.js
 ```
 
 ---
