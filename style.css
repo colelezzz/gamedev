@@ -318,6 +318,14 @@ header {
   flex-shrink: 0;
   transition: background var(--transition-fast);
 }
+
+@media screen and (max-width: 767px) {
+  .play-btn-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 9px;
+  }
+}
 .play-btn:hover .play-btn-icon {
   background: rgba(255,255,255,0.4);
 }
@@ -546,8 +554,8 @@ header {
   .image-five  { top: 38%; left: 10%; }
   .image-six   { top: 38%; right: 10%; }
 
-  .section[data-game="0"] .image-center img { height: 420px; }
-  .section[data-game="1"] .image-center img { height: 220px; }
+  .section[data-game="0"] .image-center img { height: 280px; }
+  .section[data-game="1"] .image-center img { height: 250px; }
   .section[data-game="2"] .image-center img { height: 260px; }
 }
 
@@ -564,7 +572,6 @@ header {
     --g3-img4: 185px; --g3-img5: 115px; --g3-img6: 105px;
   }
   header        { padding: 14px 18px; }
-  .nav-btn      { height: 60px; width: 60px; font-size: 20px; top: 88%; }
   .image-one    { bottom: 100px; left: 0; }
   .image-two    { left: 2%; top: 8%; }
   .image-three  { right: 2%; top: 8%; }
@@ -576,30 +583,22 @@ header {
   .swipe-hint   { display: flex; }
   .game-center-stack { top: 50%; }
 
-  .section[data-game="0"] .image-center img { height: 320px; }
+  .section[data-game="0"] .image-center img { height: 200px; }
   .section[data-game="1"] .image-center img { height: 180px; }
   .section[data-game="2"] .image-center img { height: 200px; }
+
+  /* Nav buttons stay on sides at tablet */
+  .nav-btn      { height: 60px; width: 60px; font-size: 20px; top: 50%; }
 }
 
 /* ══════════════════════════════════════════════════════════
-   MOBILE FIXES — keep all 6 floaters visible, no overlaps
-   Layout zones (portrait phone):
-     • Top strip  (0–18%):   image-two, image-three
-     • Upper-mid  (18–38%):  image-five, image-six  (near edges)
-     • Center     (38–72%):  game-center-stack (title + art)
-     • Lower-mid  (72–80%):  clear zone
-     • Bottom bar (80–100%): play-btn (bottom: ~80px), nav btns, dots
-   Bottom floaters (image-one, image-four) sit at 72–80%,
-   pushed far to the sides so they never cover the Play button.
+   MOBILE — nav buttons sit beside the Play Now button
+   Layout:
+     • [←]  [  PLAY NOW  ]  [→]
+   All three are pinned to the same bottom row.
    ══════════════════════════════════════════════════════════ */
 
-/* Large phones
-   Side column layout (3 images per side, evenly spread top→bottom):
-     Row 1 (top):    image-two / image-three   → top: 5%
-     Row 2 (middle): image-five / image-six    → top: 38%
-     Row 3 (bottom): image-one / image-four    → bottom: 148px
-   Center stack sits at top: 48%, well clear of side rows.
-*/
+/* Large phones */
 @media screen and (max-width: 767px) {
   :root {
     --g1-img1: 120px; --g1-img2: 110px; --g1-img3: 110px;
@@ -612,32 +611,60 @@ header {
     --g3-img4: 110px; --g3-img5: 80px;  --g3-img6: 80px;
   }
 
-  header        { padding: 12px 14px; }
+  header { padding: 12px 14px; }
 
-  /* Nav buttons — anchored to bottom sides, clear of play btn */
-  .nav-btn      { height: 50px; width: 50px; font-size: 18px; top: unset; bottom: 24px; right: 14px; transform: none; }
-  #prevButton   { left: 14px; right: unset; transform: none; }
+  /* ── Nav buttons: beside play button, vertically centered with it ── */
+  /* Play-btn: bottom 80px, height ~50px (icon 30px + padding 10px*2 + border 2px*2)
+     Play center = 80 + 25 = 105px. Nav btn height 44px → bottom = 105 - 22 = 83px */
+  .nav-btn {
+    position: fixed;
+    top: unset;
+    bottom: 83px;
+    transform: none;
+    height: 44px;
+    width: 44px;
+    font-size: 16px;
+    z-index: 99;
+  }
   .nav-btn:hover  { transform: scale(1.1); }
   .nav-btn:active { transform: scale(0.95); }
 
-  /* Row 1 — top corners, just below header */
+  #prevButton {
+    display: flex;
+    left: unset;
+    right: calc(50% + 96px);
+  }
+  #nextButton {
+    right: unset;
+    left: calc(50% + 96px);
+  }
+
+  /* Play button — slimmer height */
+  .play-btn {
+    font-size: 12px;
+    padding: 10px 22px;
+    letter-spacing: 1.5px;
+    bottom: 80px;
+    gap: 8px;
+  }
+
+  /* Row 1 — top corners */
   .image-two    { left: 1%; top: 5%; }
   .image-three  { right: 1%; top: 5%; }
 
-  /* Row 2 — true middle, flanking center stack */
+  /* Row 2 — middle, flanking center stack */
   .image-five   { top: 38%; left: -2%; transform: rotate(-8deg); display: block; }
   .image-six    { top: 38%; right: -2%; transform: rotate(8deg); display: block; }
 
-  /* Row 3 — lower sides, above play button */
+  /* Row 3 — lower sides */
   .image-one    { bottom: 148px; left: -2%; transform: rotate(-10deg); }
   .image-four   { bottom: 148px; right: -2%; transform: rotate(10deg); }
 
-  .play-btn           { font-size: 13px; padding: 14px 38px; letter-spacing: 2px; bottom: 80px; }
   .game-counter       { top: 16px; right: 14px; }
   .game-center-stack  { top: 48%; }
   .game-tag           { font-size: 10px; padding: 4px 12px; }
 
-  .section[data-game="0"] .image-center img { height: 200px; }
+  .section[data-game="0"] .image-center img { height: 150px; }
   .section[data-game="1"] .image-center img { height: 130px; }
   .section[data-game="2"] .image-center img { height: 150px; }
 }
@@ -655,9 +682,22 @@ header {
     --g3-img4: 82px;  --g3-img5: 62px;  --g3-img6: 62px;
   }
 
-  header        { padding: 10px 10px; }
-  .nav-btn      { height: 44px; width: 44px; font-size: 15px; bottom: 20px; right: 10px; }
-  #prevButton   { left: 10px; }
+  header { padding: 10px 10px; }
+
+  /* play-btn: bottom 75px, height ~46px → center 75+23=98. nav 40px → bottom 98-20=78px */
+  .nav-btn {
+    height: 40px;
+    width: 40px;
+    font-size: 14px;
+    bottom: 78px;
+  }
+
+  #prevButton {
+    right: calc(50% + 86px);
+  }
+  #nextButton {
+    left: calc(50% + 86px);
+  }
 
   .image-two    { left: 1%; top: 5%; }
   .image-three  { right: 1%; top: 5%; }
@@ -666,7 +706,7 @@ header {
   .image-one    { bottom: 140px; left: -2%; }
   .image-four   { bottom: 140px; right: -2%; }
 
-  .play-btn           { font-size: 12px; padding: 13px 32px; bottom: 75px; }
+  .play-btn           { font-size: 11px; padding: 10px 20px; letter-spacing: 1.5px; bottom: 75px; gap: 7px; }
   .game-tag           { display: none; }
   .game-center-stack  { top: 48%; }
 
@@ -688,9 +728,22 @@ header {
     --g3-img4: 66px; --g3-img5: 50px; --g3-img6: 50px;
   }
 
-  header        { padding: 8px 8px; }
-  .nav-btn      { height: 40px; width: 40px; font-size: 13px; bottom: 18px; right: 8px; }
-  #prevButton   { left: 8px; }
+  header { padding: 8px 8px; }
+
+  /* play-btn: bottom 70px, height ~44px → center 70+22=92. nav 36px → bottom 92-18=74px */
+  .nav-btn {
+    height: 36px;
+    width: 36px;
+    font-size: 12px;
+    bottom: 74px;
+  }
+
+  #prevButton {
+    right: calc(50% + 74px);
+  }
+  #nextButton {
+    left: calc(50% + 74px);
+  }
 
   .image-two    { left: 1%; top: 5%; }
   .image-three  { right: 1%; top: 5%; }
@@ -699,7 +752,7 @@ header {
   .image-one    { bottom: 130px; left: -2%; }
   .image-four   { bottom: 130px; right: -2%; }
 
-  .play-btn           { font-size: 11px; padding: 12px 26px; bottom: 70px; }
+  .play-btn           { font-size: 10px; padding: 10px 16px; letter-spacing: 1px; bottom: 70px; gap: 6px; }
   .game-center-stack  { top: 48%; }
 
   .section[data-game="0"] .image-center img { height: 140px; }
