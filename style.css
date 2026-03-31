@@ -203,21 +203,16 @@ header {
 }
 
 /* ── Center image ── */
-/* Game 1: TicTacToe */
 .section[data-game="0"] .image-center img {
   height: 350px;
   width: auto;
   object-fit: contain;
 }
-
-/* Game 2: Color Guessing */
 .section[data-game="1"] .image-center img {
   height: 350px;
   width: auto;
   object-fit: contain;
 }
-
-/* Game 3: Word Scramble */
 .section[data-game="2"] .image-center img {
   height: 350px;
   width: auto;
@@ -239,7 +234,7 @@ header {
   position: relative;
 }
 
-/* Base positions (shared across all games) */
+/* Base positions (desktop) */
 .image-one   { bottom: 60px; left: 0;    transform: rotate(-10deg); }
 .image-two   { top: 8%;    left: 6%;   transform: rotate(-14deg); }
 .image-three { top: 8%;    right: 6%;  transform: rotate(14deg);  }
@@ -248,7 +243,6 @@ header {
 .image-six   { top: 38%;   right: 14%; transform: rotate(8deg);   }
 
 /* ── Per-game floating image sizes ── */
-/* Game 1: TicTacToe */
 .section[data-game="0"] .image-one   { max-width: var(--g1-img1); }
 .section[data-game="0"] .image-two   { max-width: var(--g1-img2); }
 .section[data-game="0"] .image-three { max-width: var(--g1-img3); }
@@ -256,7 +250,6 @@ header {
 .section[data-game="0"] .image-five  { max-width: var(--g1-img5); }
 .section[data-game="0"] .image-six   { max-width: var(--g1-img6); }
 
-/* Game 2: Color Guessing */
 .section[data-game="1"] .image-one   { max-width: var(--g2-img1); }
 .section[data-game="1"] .image-two   { max-width: var(--g2-img2); }
 .section[data-game="1"] .image-three { max-width: var(--g2-img3); }
@@ -264,7 +257,6 @@ header {
 .section[data-game="1"] .image-five  { max-width: var(--g2-img5); }
 .section[data-game="1"] .image-six   { max-width: var(--g2-img6); }
 
-/* Game 3: Word Scramble */
 .section[data-game="2"] .image-one   { max-width: var(--g3-img1); }
 .section[data-game="2"] .image-two   { max-width: var(--g3-img2); }
 .section[data-game="2"] .image-three { max-width: var(--g3-img3); }
@@ -272,7 +264,7 @@ header {
 .section[data-game="2"] .image-five  { max-width: var(--g3-img5); }
 .section[data-game="2"] .image-six   { max-width: var(--g3-img6); }
 
-/* ── Play Button — polished pill with icon ── */
+/* ── Play Button ── */
 .play-btn {
   position: absolute;
   bottom: 88px;
@@ -589,85 +581,128 @@ header {
   .section[data-game="2"] .image-center img { height: 200px; }
 }
 
-/* Large phones */
+/* ══════════════════════════════════════════════════════════
+   MOBILE FIXES — keep all 6 floaters visible, no overlaps
+   Layout zones (portrait phone):
+     • Top strip  (0–18%):   image-two, image-three
+     • Upper-mid  (18–38%):  image-five, image-six  (near edges)
+     • Center     (38–72%):  game-center-stack (title + art)
+     • Lower-mid  (72–80%):  clear zone
+     • Bottom bar (80–100%): play-btn (bottom: ~80px), nav btns, dots
+   Bottom floaters (image-one, image-four) sit at 72–80%,
+   pushed far to the sides so they never cover the Play button.
+   ══════════════════════════════════════════════════════════ */
+
+/* Large phones
+   Side column layout (3 images per side, evenly spread top→bottom):
+     Row 1 (top):    image-two / image-three   → top: 5%
+     Row 2 (middle): image-five / image-six    → top: 38%
+     Row 3 (bottom): image-one / image-four    → bottom: 148px
+   Center stack sits at top: 48%, well clear of side rows.
+*/
 @media screen and (max-width: 767px) {
   :root {
-    --g1-img1: 155px; --g1-img2: 135px; --g1-img3: 125px;
-    --g1-img4: 155px; --g1-img5: 0px;   --g1-img6: 0px;
+    --g1-img1: 120px; --g1-img2: 110px; --g1-img3: 110px;
+    --g1-img4: 120px; --g1-img5: 90px;  --g1-img6: 90px;
 
-    --g2-img1: 125px; --g2-img2: 110px; --g2-img3: 100px;
-    --g2-img4: 125px; --g2-img5: 0px;   --g2-img6: 0px;
+    --g2-img1: 100px; --g2-img2: 90px;  --g2-img3: 90px;
+    --g2-img4: 100px; --g2-img5: 75px;  --g2-img6: 75px;
 
-    --g3-img1: 135px; --g3-img2: 120px; --g3-img3: 110px;
-    --g3-img4: 135px; --g3-img5: 0px;   --g3-img6: 0px;
+    --g3-img1: 110px; --g3-img2: 100px; --g3-img3: 100px;
+    --g3-img4: 110px; --g3-img5: 80px;  --g3-img6: 80px;
   }
-  header        { padding: 12px 14px; }
-  .nav-btn      { height: 50px; width: 50px; font-size: 18px; top: 86%; right: 14px; }
-  #prevButton   { left: 14px; }
-  .image-one    { bottom: 120px; left: 0; }
-  .image-two    { left: 1%; top: 10%; }
-  .image-three  { right: 1%; top: 10%; }
-  .image-four   { bottom: 120px; right: 0; }
-  .image-five, .image-six { display: none; }
-  .play-btn     { font-size: 13px; padding: 14px 38px; letter-spacing: 2px; bottom: 80px; }
-  .game-counter { top: 16px; right: 14px; }
-  .game-center-stack { top: 50%; }
 
-  .section[data-game="0"] .image-center img { height: 240px; }
-  .section[data-game="1"] .image-center img { height: 140px; }
-  .section[data-game="2"] .image-center img { height: 160px; }
+  header        { padding: 12px 14px; }
+
+  /* Nav buttons — anchored to bottom sides, clear of play btn */
+  .nav-btn      { height: 50px; width: 50px; font-size: 18px; top: unset; bottom: 24px; right: 14px; transform: none; }
+  #prevButton   { left: 14px; right: unset; transform: none; }
+  .nav-btn:hover  { transform: scale(1.1); }
+  .nav-btn:active { transform: scale(0.95); }
+
+  /* Row 1 — top corners, just below header */
+  .image-two    { left: 1%; top: 5%; }
+  .image-three  { right: 1%; top: 5%; }
+
+  /* Row 2 — true middle, flanking center stack */
+  .image-five   { top: 38%; left: -2%; transform: rotate(-8deg); display: block; }
+  .image-six    { top: 38%; right: -2%; transform: rotate(8deg); display: block; }
+
+  /* Row 3 — lower sides, above play button */
+  .image-one    { bottom: 148px; left: -2%; transform: rotate(-10deg); }
+  .image-four   { bottom: 148px; right: -2%; transform: rotate(10deg); }
+
+  .play-btn           { font-size: 13px; padding: 14px 38px; letter-spacing: 2px; bottom: 80px; }
+  .game-counter       { top: 16px; right: 14px; }
+  .game-center-stack  { top: 48%; }
+  .game-tag           { font-size: 10px; padding: 4px 12px; }
+
+  .section[data-game="0"] .image-center img { height: 200px; }
+  .section[data-game="1"] .image-center img { height: 130px; }
+  .section[data-game="2"] .image-center img { height: 150px; }
 }
 
 /* Small phones */
 @media screen and (max-width: 480px) {
   :root {
-    --g1-img1: 100px; --g1-img2: 88px; --g1-img3: 80px;
-    --g1-img4: 100px; --g1-img5: 0px;  --g1-img6: 0px;
+    --g1-img1: 90px;  --g1-img2: 82px;  --g1-img3: 82px;
+    --g1-img4: 90px;  --g1-img5: 68px;  --g1-img6: 68px;
 
-    --g2-img1: 80px;  --g2-img2: 70px; --g2-img3: 65px;
-    --g2-img4: 80px;  --g2-img5: 0px;  --g2-img6: 0px;
+    --g2-img1: 75px;  --g2-img2: 68px;  --g2-img3: 68px;
+    --g2-img4: 75px;  --g2-img5: 56px;  --g2-img6: 56px;
 
-    --g3-img1: 90px;  --g3-img2: 78px; --g3-img3: 70px;
-    --g3-img4: 90px;  --g3-img5: 0px;  --g3-img6: 0px;
+    --g3-img1: 82px;  --g3-img2: 74px;  --g3-img3: 74px;
+    --g3-img4: 82px;  --g3-img5: 62px;  --g3-img6: 62px;
   }
-  header        { padding: 10px 10px; }
-  .nav-btn      { height: 44px; width: 44px; font-size: 15px; top: 84%; right: 10px; }
-  #prevButton   { left: 10px; }
-  .image-one    { bottom: 110px; }
-  .image-two    { left: 4%; top: 16%; }
-  .image-three  { right: 4%; top: 16%; }
-  .image-four   { bottom: 110px; right: 0; }
-  .play-btn     { font-size: 12px; padding: 13px 32px; bottom: 75px; }
-  .game-tag     { display: none; }
-  .game-center-stack { top: 50%; }
 
-  .section[data-game="0"] .image-center img { height: 180px; }
-  .section[data-game="1"] .image-center img { height: 110px; }
-  .section[data-game="2"] .image-center img { height: 130px; }
+  header        { padding: 10px 10px; }
+  .nav-btn      { height: 44px; width: 44px; font-size: 15px; bottom: 20px; right: 10px; }
+  #prevButton   { left: 10px; }
+
+  .image-two    { left: 1%; top: 5%; }
+  .image-three  { right: 1%; top: 5%; }
+  .image-five   { top: 38%; left: -2%; display: block; }
+  .image-six    { top: 38%; right: -2%; display: block; }
+  .image-one    { bottom: 140px; left: -2%; }
+  .image-four   { bottom: 140px; right: -2%; }
+
+  .play-btn           { font-size: 12px; padding: 13px 32px; bottom: 75px; }
+  .game-tag           { display: none; }
+  .game-center-stack  { top: 48%; }
+
+  .section[data-game="0"] .image-center img { height: 160px; }
+  .section[data-game="1"] .image-center img { height: 105px; }
+  .section[data-game="2"] .image-center img { height: 125px; }
 }
 
 /* Extra small */
 @media screen and (max-width: 360px) {
   :root {
-    --g1-img1: 80px; --g1-img2: 70px; --g1-img3: 65px;
-    --g1-img4: 80px; --g1-img5: 0px;  --g1-img6: 0px;
+    --g1-img1: 72px; --g1-img2: 64px; --g1-img3: 64px;
+    --g1-img4: 72px; --g1-img5: 54px; --g1-img6: 54px;
 
-    --g2-img1: 65px; --g2-img2: 58px; --g2-img3: 52px;
-    --g2-img4: 65px; --g2-img5: 0px;  --g2-img6: 0px;
+    --g2-img1: 60px; --g2-img2: 54px; --g2-img3: 54px;
+    --g2-img4: 60px; --g2-img5: 46px; --g2-img6: 46px;
 
-    --g3-img1: 72px; --g3-img2: 63px; --g3-img3: 57px;
-    --g3-img4: 72px; --g3-img5: 0px;  --g3-img6: 0px;
+    --g3-img1: 66px; --g3-img2: 58px; --g3-img3: 58px;
+    --g3-img4: 66px; --g3-img5: 50px; --g3-img6: 50px;
   }
-  header        { padding: 8px 8px; }
-  .nav-btn      { height: 40px; width: 40px; font-size: 13px; }
-  .image-one    { bottom: 100px; }
-  .image-two    { left: 2%; top: 18%; }
-  .image-three  { right: 2%; top: 18%; }
-  .image-four   { bottom: 100px; }
-  .play-btn     { font-size: 11px; padding: 12px 26px; bottom: 70px; }
-  .game-center-stack { top: 50%; }
 
-  .section[data-game="0"] .image-center img { height: 150px; }
-  .section[data-game="1"] .image-center img { height: 90px; }
-  .section[data-game="2"] .image-center img { height: 110px; }
+  header        { padding: 8px 8px; }
+  .nav-btn      { height: 40px; width: 40px; font-size: 13px; bottom: 18px; right: 8px; }
+  #prevButton   { left: 8px; }
+
+  .image-two    { left: 1%; top: 5%; }
+  .image-three  { right: 1%; top: 5%; }
+  .image-five   { top: 38%; left: -2%; display: block; }
+  .image-six    { top: 38%; right: -2%; display: block; }
+  .image-one    { bottom: 130px; left: -2%; }
+  .image-four   { bottom: 130px; right: -2%; }
+
+  .play-btn           { font-size: 11px; padding: 12px 26px; bottom: 70px; }
+  .game-center-stack  { top: 48%; }
+
+  .section[data-game="0"] .image-center img { height: 140px; }
+  .section[data-game="1"] .image-center img { height: 85px; }
+  .section[data-game="2"] .image-center img { height: 105px; }
 }
