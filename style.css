@@ -531,8 +531,8 @@ header {
   .image-five  { top: 38%; left: 12%; }
   .image-six   { top: 38%; right: 12%; }
 
-  .section[data-game="0"] .image-center img { height: 500px; }
-  .section[data-game="1"] .image-center img { height: 260px; }
+  .section[data-game="0"] .image-center img { height: 330px; }
+  .section[data-game="1"] .image-center img { height: 295px; }
   .section[data-game="2"] .image-center img { height: 300px; }
 }
 
@@ -711,7 +711,7 @@ header {
   .game-center-stack  { top: 48%; }
 
   .section[data-game="0"] .image-center img { height: 160px; }
-  .section[data-game="1"] .image-center img { height: 105px; }
+  .section[data-game="1"] .image-center img { height: 130px; }
   .section[data-game="2"] .image-center img { height: 125px; }
 }
 
@@ -756,6 +756,6 @@ header {
   .game-center-stack  { top: 48%; }
 
   .section[data-game="0"] .image-center img { height: 140px; }
-  .section[data-game="1"] .image-center img { height: 85px; }
+  .section[data-game="1"] .image-center img { height: 115px; }
   .section[data-game="2"] .image-center img { height: 105px; }
 }
