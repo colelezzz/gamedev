@@ -139,6 +139,9 @@ function navigateTo(targetIndex) {
   const prevIndex    = currentIndex;
   currentIndex       = targetIndex;
 
+  // ── Persist current section in the URL hash ──
+  history.replaceState(null, "", `#section-${currentIndex + 1}`);
+
   sectionContainer.style.left = `${-currentIndex * 100}%`;
 
   gsap.to(siteTitle, { color: logoColors[currentIndex], duration: 0.7 });
@@ -244,15 +247,14 @@ document.addEventListener("touchend", e => {
    animations so we know which section to show
    ════════════════════════════════════════════ */
 
-// Detect if we're coming back from a game page
+// Detect current section from hash (set by navigateTo or a previous visit)
 const _hash     = window.location.hash;
 const _hashEl   = _hash ? document.querySelector(_hash) : null;
 const _hashGame = _hashEl ? parseInt(_hashEl.dataset.game, 10) : -1;
-const _fromHash = !isNaN(_hashGame) && _hashGame > 0 && _hashGame < TOTAL_GAMES;
+const _fromHash = !isNaN(_hashGame) && _hashGame >= 0 && _hashGame < TOTAL_GAMES;
 
-if (_fromHash) {
-  // ── BACK-NAVIGATE BRANCH ─────────────────────
-  // Set state before any animations fire
+if (_fromHash && _hashGame > 0) {
+  // ── RESTORE SECTION BRANCH (refresh or back-navigate) ────────────
   currentIndex = _hashGame;
 
   // Jump container instantly — no CSS slide
@@ -263,8 +265,7 @@ if (_fromHash) {
 
   gsap.set(siteTitle, { color: logoColors[currentIndex] });
 
-  // All sections start fully visible at natural CSS state —
-  // entrance animations below are scoped so they won't touch them
+  // Clear all sections to a clean state
   sections.forEach((sec, i) => {
     sectionImgs[i].forEach(img => gsap.set(img, { clearProps: "all" }));
     gsap.set(sec.querySelector(".game-center-stack"), { clearProps: "all" });
@@ -293,14 +294,13 @@ if (_fromHash) {
     opacity: 0, delay: 1.2, duration: 0.6
   });
 
-  // Clean up hash so a manual refresh lands on slide 1
-  history.replaceState(null, "", window.location.pathname);
-
 } else {
-  // ── NORMAL FIRST-LOAD BRANCH ─────────────────
+  // ── NORMAL FIRST-LOAD BRANCH (section 0) ─────────────────────────
 
-  // Set ALL sections' images and center stacks to hidden initial state.
-  // They will only animate in when navigateTo() is called for that section.
+  // Write hash so a refresh stays on section 1
+  history.replaceState(null, "", "#section-1");
+
+  // Set ALL sections' images and center stacks to hidden initial state
   sections.forEach((sec, i) => {
     gsap.set(sec.querySelector(".game-center-stack"), { y: -window.innerHeight, opacity: 0 });
     sectionImgs[i].forEach(img => gsap.set(img, { y: -window.innerHeight, opacity: 0 }));
