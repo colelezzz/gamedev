@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Scramble</title>
+  <link rel="icon" type="image/png" href="../images/wordScramble.png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <canvas id="particle-canvas"></canvas>
+
+  <header>
+    <div class="header-left">
+      <a class="btn-back" href="../index.html#section-3">← Back</a>
+      <span class="game-badge">Puzzle</span>
+    </div>
+    <div class="header-right">
+      <button class="btn-help" id="btn-help">?</button>
+      <img class="header-logo-img" src="../images/wordScramble.png" alt="Word Scramble">
+    </div>
+  </header>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-title">🔤 How to Play</div>
+        <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-steps">
+        <div class="modal-step">
+          <div class="step-num">⏱️</div>
+          <div class="step-body">
+            <div class="step-title">Pick your time & press Start</div>
+            <div class="step-desc">Choose <strong>30s</strong>, <strong>1 min</strong>, or a <strong>custom</strong>
+              duration. The countdown begins the moment you press <strong>▶ Start</strong>.</div>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="step-num">🔀</div>
+          <div class="step-body">
+            <div class="step-title">Unscramble the tiles</div>
+            <div class="step-desc">Letters are shuffled into tiles. Figure out the original word and type it in the
+              input box.</div>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="step-num">✍️</div>
+          <div class="step-body">
+            <div class="step-title">Submit or press Enter</div>
+            <div class="step-desc"><strong>Correct</strong> → next word loads instantly. <strong>Wrong</strong> → same
+              word stays, keep trying!</div>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="step-num">⏭️</div>
+          <div class="step-body">
+            <div class="step-title">Skip to move on</div>
+            <div class="step-desc">Stuck? Hit <strong>Skip</strong> to reveal the answer and jump to the next word.
+            </div>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="step-num">⏸️</div>
+          <div class="step-body">
+            <div class="step-title">Pause freezes everything</div>
+            <div class="step-desc">Timer stops, input locks, and the hint button is blocked. Resume to continue.</div>
+          </div>
+        </div>
+        <div class="modal-step">
+          <div class="step-num">💡</div>
+          <div class="step-body">
+            <div class="step-title">One hint per word</div>
+            <div class="step-desc">Reveals the first letter + word length. Only available while the game is running and
+              unpaused.</div>
+          </div>
+        </div>
+      </div>
+      <hr class="modal-divider">
+      <div class="modal-tip">💡 Tip: Unscramble as many words as you can before the timer runs out. Use hints wisely —
+        only one per word!</div>
+    </div>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="countdown-overlay" id="countdown-overlay">
+    <div class="countdown-box">
+      <div class="countdown-num" id="countdown-num">3</div>
+      <div class="countdown-msg" id="countdown-msg">Get Ready!</div>
+    </div>
+  </div>
+
+  <div class="results-overlay" id="results-overlay">
+    <div class="results-box">
+      <button class="modal-close res-close" id="res-close">✕</button>
+      <div class="results-emoji" id="res-emoji">🏆</div>
+      <div class="results-title" id="res-title">Time's Up!</div>
+      <div class="results-score" id="res-score">0</div>
+      <div class="results-sub">words correct</div>
+      <div class="results-grid">
+        <div class="results-stat">
+          <div class="results-stat-num sn-correct" id="res-correct">0</div>
+          <div class="results-stat-lbl">Correct</div>
+        </div>
+        <div class="results-stat">
+          <div class="results-stat-num sn-wrong" id="res-wrong">0</div>
+          <div class="results-stat-lbl">Wrong</div>
+        </div>
+        <div class="results-stat">
+          <div class="results-stat-num sn-streak" id="res-streak">0</div>
+          <div class="results-stat-lbl">Best Streak</div>
+        </div>
+        <div class="results-stat">
+          <div class="results-stat-num sn-best" id="res-skipped">0</div>
+          <div class="results-stat-lbl">Skipped</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+    <div class="shell">
+
+      <!-- LEFT CARD (board) -->
+      <div class="card board-card">
+        <div class="board-paused-veil" id="paused-veil"><span>⏸ Paused</span></div>
+
+        <div class="status-bar s-waiting" id="status">⏱️ Pick your time and press Start!</div>
+
+        <div class="scramble-display">
+          <div class="scramble-label">Scrambled Word</div>
+          <div class="scramble-letters" id="scramble-letters">
+            <div class="scramble-loading">Waiting to start…</div>
+          </div>
+          <div class="badge-row">
+            <div class="category-badge" id="category-badge">—</div>
+            <div class="diff-badge" id="diff-badge">—</div>
+          </div>
+        </div>
+
+        <div class="guess-area">
+          <input class="guess-input" id="guess" type="text" placeholder="Type your answer…" autocomplete="off"
+            spellcheck="false" disabled>
+          <button class="btn bl btn-submit-inline" id="btn-submit" disabled>✔ Submit</button>
+        </div>
+
+        <!-- THIS ROUND -->
+        <div class="sec-block" style="flex:0; padding:.7rem 0; width:100%;">
+          <div class="sec-lbl">This Round</div>
+          <div class="progress-area">
+            <div class="progress-track">
+              <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+            </div>
+            <div class="progress-meta"><span id="prog-text">0 words done</span><span id="prog-acc">— acc</span></div>
+          </div>
+        </div>
+
+        <!-- WORD HISTORY -->
+        <div class="word-history" id="word-history">
+          <div class="wh-label">Recent Words</div>
+          <div class="wh-list" id="wh-list">
+            <div class="wh-empty">No words yet — start the game!</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT CARD (sidebar) -->
+      <div class="card sidebar-card">
+
+        <!-- SCOREBOARD -->
+        <div class="sec-block">
+          <div class="sec-lbl">Scoreboard</div>
+          <div class="score-grid">
+            <div class="score-col">
+              <div class="score-lbl">Correct</div>
+              <div class="score-num sn-correct" id="sc-correct">0</div>
+            </div>
+            <div class="score-col">
+              <div class="score-lbl">Wrong</div>
+              <div class="score-num sn-wrong" id="sc-wrong">0</div>
+            </div>
+            <div class="score-col">
+              <div class="score-lbl">Streak 🔥</div>
+              <div class="score-num sn-streak" id="sc-streak">0</div>
+            </div>
+            <div class="score-col">
+              <div class="score-lbl">Best 🏆</div>
+              <div class="score-num sn-best" id="sc-best">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TIMER -->
+        <div class="sec-block">
+          <div class="sec-lbl">Timer</div>
+          <div class="timer-section">
+            <div class="timer-layout">
+              <div class="timer-ring-wrap">
+                <div class="big-ring-container">
+                  <svg class="big-ring-svg" width="92" height="92" viewBox="0 0 92 92">
+                    <circle class="ring-glow" id="ring-glow" cx="46" cy="46" r="40" />
+                    <circle class="ring-track" cx="46" cy="46" r="40" />
+                    <circle class="ring-progress" id="ring-progress" cx="46" cy="46" r="40" />
+                  </svg>
+                  <span id="timer-num">30</span>
+                </div>
+                <div class="timer-meta">
+                  <div class="timer-meta-row" id="timer-meta-label">30s selected</div>
+                  <div class="timer-meta-row" id="timer-meta-sub">Press Start to begin</div>
+                  <!-- ERROR MESSAGE sits right here, beside the timer meta text -->
+                  <div id="timer-error">⚠ Min. 10 seconds required</div>
+                </div>
+              </div>
+              <div class="timer-controls">
+                <div class="timer-opts-row">
+                  <button class="timer-opt-btn sel" data-secs="30">30s</button>
+                  <button class="timer-opt-btn" data-secs="60">1 min</button>
+                  <button class="timer-opt-btn" data-secs="custom">Custom</button>
+                  <div class="custom-time-row" id="custom-row" style="display:none;">
+                    <input class="custom-time-input" id="custom-secs" type="number" min="10" max="600" value="45">
+                    <span class="custom-time-label">s</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HINT -->
+        <div class="sec-block">
+          <div class="sec-lbl">Hint</div>
+          <div class="hint-area">
+            <div class="hint-box" id="hint-box">Start a game to use hints…</div>
+            <button class="btn bl" style="font-size:.75rem;padding:8px 14px;" id="btn-hint" disabled>💡 Reveal
+              Hint</button>
+          </div>
+        </div>
+
+        <!-- THEME -->
+        <div class="sec-block">
+          <div class="theme-row">
+            <span class="theme-lbl">Theme</span>
+            <select class="theme-sel" id="scheme">
+              <option value="default">💜 Default</option>
+              <option value="dark">🌙 Dark</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="sec-block">
+          <div class="sec-lbl">Actions</div>
+          <div class="action-btns">
+            <button class="btn bg" id="btn-start">▶ Start</button>
+            <button class="btn bw" id="btn-skip" disabled>⏭ Skip</button>
+            <button class="btn bl" id="btn-pause" disabled>⏸ Pause</button>
+            <button class="btn br" id="btn-reset">↺ Reset</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
