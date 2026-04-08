@@ -1,27 +1,27 @@
-// ─── STATE ───────────────────────────────────────────────────────────────────
-let board = Array(9).fill(''), cur = 'X', active = true, hist = [], scores = {X:0, O:0, D:0};
+// ─── STATE ───
+let board = Array(9).fill(''), cur = 'X', active = true, hist = [], scores = { X: 0, O: 0, D: 0 };
 const TURN_TIME = 12;
 let tInt = null, timeLeft = TURN_TIME, timerStarted = false, timerPaused = false;
-const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+const WINS = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 
-// ─── ELEMENT REFS ─────────────────────────────────────────────────────────────
-const board_el  = document.getElementById('board'),
-      status_el = document.getElementById('status'),
-      scX_el    = document.getElementById('sc-x'),
-      scO_el    = document.getElementById('sc-o'),
-      scD_el    = document.getElementById('sc-d'),
-      lblX_el   = document.getElementById('lbl-x'),
-      lblO_el   = document.getElementById('lbl-o'),
-      nx_el     = document.getElementById('nx'),
-      no_el     = document.getElementById('no'),
-      tDisp_el  = document.getElementById('timer-disp'),
-      scheme_el = document.getElementById('scheme'),
-      pauseBtn  = document.getElementById('btn-pause');
+// ─── ELEMENT REFS ───
+const board_el = document.getElementById('board'),
+  status_el = document.getElementById('status'),
+  scX_el = document.getElementById('sc-x'),
+  scO_el = document.getElementById('sc-o'),
+  scD_el = document.getElementById('sc-d'),
+  lblX_el = document.getElementById('lbl-x'),
+  lblO_el = document.getElementById('lbl-o'),
+  nx_el = document.getElementById('nx'),
+  no_el = document.getElementById('no'),
+  tDisp_el = document.getElementById('timer-disp'),
+  scheme_el = document.getElementById('scheme'),
+  pauseBtn = document.getElementById('btn-pause');
 
 const nameX = () => nx_el.value.trim() || 'Player X';
 const nameO = () => no_el.value.trim() || 'Player O';
 
-// ─── BOARD BUILD ──────────────────────────────────────────────────────────────
+// ─── BOARD BUILD ───
 function build() {
   board_el.innerHTML = '';
   for (let i = 0; i < 9; i++) {
@@ -32,7 +32,7 @@ function build() {
   }
 }
 
-// ─── PAUSED CELL OVERLAY ──────────────────────────────────────────────────────
+// ─── PAUSED CELL OVERLAY ───
 function syncPausedCells() {
   [...board_el.children].forEach(c => {
     if (!c.classList.contains('taken')) {
@@ -41,23 +41,23 @@ function syncPausedCells() {
   });
 }
 
-// ─── SYNC BUTTON STATES ───────────────────────────────────────────────────────
+// ─── SYNC BUTTON STATES ───
 function syncButtonStates() {
   const blocked = timerStarted && timerPaused && active;
-  document.getElementById('btn-new').disabled  = blocked;
+  document.getElementById('btn-new').disabled = blocked;
   document.getElementById('btn-undo').disabled = blocked;
-  document.getElementById('btn-ai').disabled   = blocked;
-  document.getElementById('btn-rs').disabled   = blocked;
+  document.getElementById('btn-ai').disabled = blocked;
+  document.getElementById('btn-rs').disabled = blocked;
 }
 
-// ─── CLICK HANDLER ────────────────────────────────────────────────────────────
+// ─── CLICK HANDLER ───
 function onClick(e) {
   const i = +e.currentTarget.dataset.i;
   if (board[i] || !active || timerPaused) return;
   move(i);
 }
 
-// ─── MOVE ─────────────────────────────────────────────────────────────────────
+// ─── MOVE ───
 function move(i) {
   board[i] = cur; hist.push(i);
   const cell = board_el.children[i];
@@ -72,7 +72,7 @@ function move(i) {
   saveState();
 }
 
-// ─── CHECK WIN / DRAW ─────────────────────────────────────────────────────────
+// ─── CHECK WIN / DRAW ───
 function check() {
   for (const [a, b, c] of WINS) {
     if (board[a] && board[a] === board[b] && board[a] === board[c]) {
@@ -94,7 +94,7 @@ function check() {
   resetTurnTimer();
 }
 
-// ─── STATUS HELPERS ───────────────────────────────────────────────────────────
+// ─── STATUS HELPERS ───
 function updateStatus() {
   const n = cur === 'X' ? nameX() : nameO();
   if (cur === 'X') {
@@ -106,15 +106,15 @@ function updateStatus() {
 function setStatus(cls, msg) { status_el.className = 'status-bar ' + cls; status_el.innerHTML = msg; }
 function setStatusHTML(cls, html) { status_el.className = 'status-bar ' + cls; status_el.innerHTML = html; }
 
-// ─── NEW GAME ─────────────────────────────────────────────────────────────────
+// ─── NEW GAME ───
 function newGame() {
   board = Array(9).fill(''); cur = 'X'; active = true; hist = [];
   [...board_el.children].forEach(c => { c.className = 'cell'; c.innerHTML = ''; });
 
   stopTimer();
   timerStarted = false;
-  timerPaused  = false;
-  timeLeft     = TURN_TIME;
+  timerPaused = false;
+  timeLeft = TURN_TIME;
   updateTimerUI();
   pauseBtn.textContent = '⏸ Pause';
 
@@ -125,7 +125,7 @@ function newGame() {
   saveState();
 }
 
-// ─── UNDO ─────────────────────────────────────────────────────────────────────
+// ─── UNDO ───
 function undo() {
   if (!hist.length || !active) return;
   const i = hist.pop(); board[i] = '';
@@ -135,8 +135,8 @@ function undo() {
   if (hist.length === 0) {
     stopTimer();
     timerStarted = false;
-    timerPaused  = false;
-    timeLeft     = TURN_TIME;
+    timerPaused = false;
+    timeLeft = TURN_TIME;
     updateTimerUI();
     pauseBtn.textContent = '⏸ Pause';
     syncPausedCells();
@@ -149,7 +149,7 @@ function undo() {
   saveState();
 }
 
-// ─── AI ───────────────────────────────────────────────────────────────────────
+// ─── AI ───
 function aiMove() {
   if (!active || timerPaused) return;
   const r = minimax([...board], cur, true, 0);
@@ -171,24 +171,24 @@ function minimax(b, p, isMax, d) {
   return best;
 }
 
-// ─── SCORES ───────────────────────────────────────────────────────────────────
+// ─── SCORES ───
 function syncScores() { scX_el.textContent = scores.X; scO_el.textContent = scores.O; scD_el.textContent = scores.D; }
 function bump(p) {
   const el = p === 'X' ? scX_el : scO_el;
   el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump');
   setTimeout(() => el.classList.remove('bump'), 400);
 }
-function resetScores() { scores = {X:0, O:0, D:0}; syncScores(); saveState(); }
+function resetScores() { scores = { X: 0, O: 0, D: 0 }; syncScores(); saveState(); }
 
-// ─── NAMES ────────────────────────────────────────────────────────────────────
+// ─── NAMES ───
 function syncNames() { lblX_el.textContent = nameX(); lblO_el.textContent = nameO(); if (active) updateStatus(); saveState(); }
 nx_el.addEventListener('input', syncNames);
 no_el.addEventListener('input', syncNames);
 
-// ─── PENCIL EDIT TOGGLE ───────────────────────────────────────────────────────
+// ─── PENCIL EDIT TOGGLE ───
 function toggleEdit(player) {
   const input = player === 'x' ? nx_el : no_el;
-  const btn   = document.getElementById('edit-' + player);
+  const btn = document.getElementById('edit-' + player);
   const isEditing = input.classList.contains('editing');
   if (isEditing) {
     input.blur();
@@ -216,8 +216,8 @@ const editBtnX = document.getElementById('edit-x');
 const editBtnO = document.getElementById('edit-o');
 editBtnX.addEventListener('mousedown', e => e.preventDefault());
 editBtnO.addEventListener('mousedown', e => e.preventDefault());
-editBtnX.addEventListener('touchstart', e => e.preventDefault(), {passive: false});
-editBtnO.addEventListener('touchstart', e => e.preventDefault(), {passive: false});
+editBtnX.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+editBtnO.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
 
 nx_el.addEventListener('blur', () => { if (nx_el.classList.contains('editing')) toggleEdit('x'); });
 no_el.addEventListener('blur', () => { if (no_el.classList.contains('editing')) toggleEdit('o'); });
@@ -228,14 +228,14 @@ document.getElementById('btn-back').addEventListener('click', () => {
   sessionStorage.removeItem('ttt-state');
 });
 
-// ─── MODAL ────────────────────────────────────────────────────────────────────
+// ─── MODAL ───
 const modalOverlay = document.getElementById('modal-overlay');
 document.getElementById('btn-help').addEventListener('click', () => modalOverlay.classList.add('open'));
 document.getElementById('modal-close').addEventListener('click', () => modalOverlay.classList.remove('open'));
 modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) modalOverlay.classList.remove('open'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') modalOverlay.classList.remove('open'); });
 
-// ─── TIMER UI ─────────────────────────────────────────────────────────────────
+// ─── TIMER UI ───
 const CIRCUMFERENCE = 125.6;
 const ring_el = document.getElementById('ring-fill');
 
@@ -248,7 +248,7 @@ function updateTimerUI() {
   ring_el.classList.toggle('urgent', urgent);
 }
 
-// ─── TIMER LOGIC ──────────────────────────────────────────────────────────────
+// ─── TIMER LOGIC ───
 function startTurnTimer() {
   if (!timerStarted || timerPaused) return;
   stopTimer();
@@ -264,8 +264,8 @@ function startTurnTimer() {
 
 function beginTurnTimer() {
   timerStarted = true;
-  timerPaused  = false;
-  timeLeft     = TURN_TIME;
+  timerPaused = false;
+  timeLeft = TURN_TIME;
   updateTimerUI();
   startTurnTimer();
 }
@@ -305,33 +305,33 @@ function skipTurn() {
   resetTurnTimer();
 }
 
-// ─── CONFETTI ─────────────────────────────────────────────────────────────────
+// ─── CONFETTI ───
 function confetti() {
-  const cols = ['#c9e78a','#ffb2b2','#ffd700','#a8d455','#e85d6a','#3daa60','#ffffff','#ffd6a5'];
+  const cols = ['#c9e78a', '#ffb2b2', '#ffd700', '#a8d455', '#e85d6a', '#3daa60', '#ffffff', '#ffd6a5'];
   for (let i = 0; i < 65; i++) setTimeout(() => {
     const el = document.createElement('div');
     el.className = 'cp';
     const sz = 6 + Math.random() * 10;
-    el.style.cssText = `left:${Math.random()*100}vw;top:-12px;
-      width:${sz}px;height:${sz*(Math.random()>.45?1:2.2)}px;
-      background:${cols[~~(Math.random()*cols.length)]};
-      border-radius:${Math.random()>.4?'50%':'3px'};
+    el.style.cssText = `left:${Math.random() * 100}vw;top:-12px;
+      width:${sz}px;height:${sz * (Math.random() > .45 ? 1 : 2.2)}px;
+      background:${cols[~~(Math.random() * cols.length)]};
+      border-radius:${Math.random() > .4 ? '50%' : '3px'};
       border:1.5px solid rgba(255,255,255,0.4);
-      animation-duration:${2+Math.random()*2}s;
-      animation-delay:${Math.random()*.4}s;`;
+      animation-duration:${2 + Math.random() * 2}s;
+      animation-delay:${Math.random() * .4}s;`;
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 5000);
   }, i * 22);
 }
 
-// ─── PARTICLE SYSTEM ─────────────────────────────────────────────────────────
+// ─── PARTICLE SYSTEM ───
 function initParticles(canvas) {
   const ctx = canvas.getContext('2d');
   let W, H, particles;
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
-    W = canvas.width  = rect.width  || window.innerWidth;
+    W = canvas.width = rect.width || window.innerWidth;
     H = canvas.height = rect.height || window.innerHeight;
   }
 
@@ -342,12 +342,12 @@ function initParticles(canvas) {
   function createParticles() {
     const count = Math.floor((W * H) / 7500);
     particles = Array.from({ length: count }, () => ({
-      x:  Math.random() * W,
-      y:  Math.random() * H,
-      r:  Math.random() * 6 + 3,
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 6 + 3,
       dx: (Math.random() - 0.5) * 0.35,
       dy: (Math.random() - 0.5) * 0.35,
-      a:  Math.random() * 0.22 + 0.1
+      a: Math.random() * 0.22 + 0.1
     }));
   }
 
@@ -374,20 +374,20 @@ function initParticles(canvas) {
 
 initParticles(document.getElementById('particle-canvas'));
 
-// ─── THEME ────────────────────────────────────────────────────────────────────
+// ─── THEME ───
 scheme_el.addEventListener('change', e => {
   document.documentElement.setAttribute('data-scheme', e.target.value);
   localStorage.setItem('ttt-scheme', e.target.value);
 });
 
-// ─── BUTTON BINDINGS ──────────────────────────────────────────────────────────
+// ─── BUTTON BINDINGS ───
 document.getElementById('btn-new').addEventListener('click', newGame);
 pauseBtn.addEventListener('click', pauseTimer);
 document.getElementById('btn-undo').addEventListener('click', undo);
 document.getElementById('btn-ai').addEventListener('click', aiMove);
 document.getElementById('btn-rs').addEventListener('click', resetScores);
 
-// ─── SAVE / RESTORE STATE ─────────────────────────────────────────────────────
+// ─── SAVE / RESTORE STATE ───
 function saveState() {
   try {
     sessionStorage.setItem('ttt-state', JSON.stringify({
@@ -396,7 +396,7 @@ function saveState() {
       nameO: no_el.value,
       timeLeft, timerStarted, timerPaused
     }));
-  } catch(e) {}
+  } catch (e) { }
 }
 
 function restoreState() {
@@ -410,13 +410,13 @@ function restoreState() {
     lblX_el.textContent = nx_el.value;
     lblO_el.textContent = no_el.value;
 
-    scores = s.scores || {X:0, O:0, D:0};
+    scores = s.scores || { X: 0, O: 0, D: 0 };
     syncScores();
 
-    board  = s.board  || Array(9).fill('');
-    cur    = s.cur    || 'X';
+    board = s.board || Array(9).fill('');
+    cur = s.cur || 'X';
     active = s.active != null ? s.active : true;
-    hist   = s.hist   || [];
+    hist = s.hist || [];
 
     build();
     board.forEach((v, i) => {
@@ -446,7 +446,7 @@ function restoreState() {
     }
 
     timerStarted = s.timerStarted || false;
-    timeLeft     = s.timeLeft != null ? s.timeLeft : TURN_TIME;
+    timeLeft = s.timeLeft != null ? s.timeLeft : TURN_TIME;
 
     if (timerStarted && active) {
       timerPaused = true;
@@ -461,10 +461,10 @@ function restoreState() {
     syncButtonStates();
 
     return true;
-  } catch(e) { return false; }
+  } catch (e) { return false; }
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+// ─── INIT ────
 (function init() {
   const s = localStorage.getItem('ttt-scheme') || 'default';
   document.documentElement.setAttribute('data-scheme', s);
@@ -473,8 +473,8 @@ function restoreState() {
   if (!restoreState()) {
     build();
     timerStarted = false;
-    timerPaused  = false;
-    timeLeft     = TURN_TIME;
+    timerPaused = false;
+    timeLeft = TURN_TIME;
     updateTimerUI();
     pauseBtn.textContent = '⏸ Pause';
     syncButtonStates();
