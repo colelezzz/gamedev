@@ -59,7 +59,8 @@ mini-arcade/
 │   ├── logo.png
 │   ├── tictactoe.png        
 │   ├── guessinggame.png       
-│   └── wordscramble.png       
+│   ├── wordscramble.png     
+│   └── other images hehe (too many to include T__T)  
 ├── tictactoe/
     └── tictactoe.html
     └── style.css
@@ -101,7 +102,7 @@ mini-arcade/
 
 **Developed by:** `Coleen Isles`  
 **GitHub:** [@colelezzz](https://github.com/colelezzz)  
-**Live Demo:** `[yet to come]`
+**Live Demo:** `[mini arcade](https://mini-arcade-rouge.vercel.app/)`
 
 ---
 
