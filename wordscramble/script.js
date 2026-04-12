@@ -1,7 +1,5 @@
 
-/* ══════════════════════════════════════
-   CONFIG
-══════════════════════════════════════ */
+// ─── CONFIG ─── 
 const API_BASE = "https://random-word-api.herokuapp.com/word";
 const DIFF_CONFIG = {
     easy: { apiDiff: 1, minLen: 3, maxLen: 5, label: "🟢 Easy", cls: "diff-easy" },
@@ -19,17 +17,13 @@ const FALLBACK = [
 ];
 const CIRCUMFERENCE = 2 * Math.PI * 40;
 
-/* ══════════════════════════════════════
-   STATE
-══════════════════════════════════════ */
+// ─── STATE ─── 
 let current = null, scrambled = "", totalSecs = 30, timeLeft = 0;
 let timerInterval = null, gameRunning = false, paused = false;
 let scoreCorrect = 0, scoreWrong = 0, scoreSkipped = 0, streak = 0, bestStreak = 0;
 let hintRevealed = false, wordQueue = [];
 
-/* ══════════════════════════════════════
-   DOM REFS
-══════════════════════════════════════ */
+// ─── DOM REFS ─── 
 const $status = document.getElementById("status");
 const $tiles = document.getElementById("scramble-letters");
 const $catBadge = document.getElementById("category-badge");
@@ -69,9 +63,7 @@ const $customSecs = document.getElementById("custom-secs");
 const $timerOpts = document.querySelectorAll(".timer-opt-btn");
 const $whList = document.getElementById("wh-list");
 
-/* ══════════════════════════════════════
-   WORD HISTORY
-══════════════════════════════════════ */
+// ─── WORD HISTORY ─── 
 function pushWordHistory(word, result) {
     const empty = $whList.querySelector(".wh-empty");
     if (empty) empty.remove();
@@ -87,9 +79,7 @@ function clearWordHistory() {
     $whList.innerHTML = '<div class="wh-empty">No words yet — start the game!</div>';
 }
 
-/* ══════════════════════════════════════
-   RING
-══════════════════════════════════════ */
+// ─── RING ─── 
 function setRing(t, total) {
     const pct = total > 0 ? t / total : 1;
     const dash = CIRCUMFERENCE * (1 - pct);
@@ -108,13 +98,10 @@ function resetRing() {
     $timerNum.classList.remove("urgent");
 }
 
-/* ══════════════════════════════════════
-   TIMER ERROR HELPERS
-══════════════════════════════════════ */
+// ─── TIMER ERROR HELPERS ─── 
 function showTimerError(msg) {
     $timerError.textContent = "⚠ " + msg;
     $timerError.classList.add("visible");
-    // re-trigger shake animation
     $timerError.style.animation = "none";
     void $timerError.offsetWidth;
     $timerError.style.animation = "";
@@ -125,9 +112,7 @@ function hideTimerError() {
     $customSecs.classList.remove("input-error");
 }
 
-/* ══════════════════════════════════════
-   TIMER
-══════════════════════════════════════ */
+// ─── TIMER ─── 
 function startCountdown() {
     clearInterval(timerInterval);
     timeLeft = totalSecs;
@@ -147,9 +132,7 @@ function startCountdown() {
 }
 function stopCountdown() { clearInterval(timerInterval); }
 
-/* ══════════════════════════════════════
-   STATUS
-══════════════════════════════════════ */
+// ─── STATUS ─── 
 function setStatus(type, text) {
     $status.className = "status-bar";
     const cls = { idle: "s-idle", waiting: "s-waiting", correct: "s-correct", wrong: "s-wrong", timeout: "s-timeout", paused: "s-paused" }[type] || "";
@@ -157,9 +140,7 @@ function setStatus(type, text) {
     $status.textContent = text;
 }
 
-/* ══════════════════════════════════════
-   TILES
-══════════════════════════════════════ */
+// ─── TILES ─── 
 function renderTiles(letters, state = "") {
     $tiles.innerHTML = "";
     letters.split("").forEach((ch, i) => {
@@ -177,9 +158,7 @@ function showLoading(msg = "Fetching word…") {
     $diffBadge.className = "diff-badge";
 }
 
-/* ══════════════════════════════════════
-   DIFFICULTY
-══════════════════════════════════════ */
+// ─── DIFFICULTY ─── 
 function renderDiffBadge(diff) {
     const cfg = DIFF_CONFIG[diff] || DIFF_CONFIG.easy;
     $diffBadge.textContent = cfg.label;
@@ -187,9 +166,7 @@ function renderDiffBadge(diff) {
 }
 function randDiff() { const r = Math.random(); return r < .50 ? "easy" : r < .82 ? "medium" : "hard"; }
 
-/* ══════════════════════════════════════
-   WORD FETCHING
-══════════════════════════════════════ */
+// ─── WORD FETCHING ─── 
 async function fetchWord(diff) {
     const cfg = DIFF_CONFIG[diff];
     try {
@@ -214,9 +191,7 @@ async function getWord() {
     return w;
 }
 
-/* ══════════════════════════════════════
-   UTILS
-══════════════════════════════════════ */
+// ─── UTILS ─── 
 function shuffle(w) {
     const a = w.split("");
     for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; }
@@ -225,9 +200,7 @@ function shuffle(w) {
 function getScrambled(w) { let s = shuffle(w), t = 0; while (s === w && t++ < 20) s = shuffle(w); return s; }
 function bump(el) { el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump"); el.addEventListener("animationend", () => el.classList.remove("bump"), { once: true }); }
 
-/* ══════════════════════════════════════
-   PROGRESS
-══════════════════════════════════════ */
+// ─── PROGRESS ─── 
 function updateProgress() {
     const total = scoreCorrect + scoreWrong + scoreSkipped;
     const acc = total > 0 ? Math.round((scoreCorrect / total) * 100) : 0;
@@ -236,9 +209,7 @@ function updateProgress() {
     $progAcc.textContent = total > 0 ? acc + "% acc" : "— acc";
 }
 
-/* ══════════════════════════════════════
-   LOCK / UNLOCK
-══════════════════════════════════════ */
+// ─── LOCK / UNLOCK ─── 
 function lockAll() {
     $guess.disabled = true; $btnSubmit.disabled = true;
     $btnHint.disabled = true; $btnSkip.disabled = true;
@@ -249,9 +220,7 @@ function unlockPlay() {
     $btnHint.disabled = hintRevealed; $btnSkip.disabled = false;
 }
 
-/* ══════════════════════════════════════
-   PAUSE
-══════════════════════════════════════ */
+// ─── PAUSE ─── 
 function setPause(p) {
     paused = p;
     $pausedVeil.classList.toggle("visible", p);
@@ -271,9 +240,7 @@ function setPause(p) {
     }
 }
 
-/* ══════════════════════════════════════
-   COUNTDOWN ANIMATION
-══════════════════════════════════════ */
+// ─── COUNTDOWN ANIMATION ───
 function showCountdown() {
     return new Promise(resolve => {
         $cdOverlay.classList.add("active");
@@ -290,9 +257,7 @@ function showCountdown() {
     });
 }
 
-/* ══════════════════════════════════════
-   RESULTS
-══════════════════════════════════════ */
+// ─── RESULTS ───
 function showResults() {
     const total = scoreCorrect + scoreWrong + scoreSkipped;
     const acc = total > 0 ? Math.round((scoreCorrect / total) * 100) : 0;
@@ -313,9 +278,7 @@ function showResults() {
     confetti(65);
 }
 
-/* ══════════════════════════════════════
-   GAME FLOW
-══════════════════════════════════════ */
+// ─── GAME FLOW ───
 async function startGame() {
     const selBtn = document.querySelector(".timer-opt-btn.sel");
     if (selBtn && selBtn.dataset.secs === "custom") {
@@ -324,7 +287,7 @@ async function startGame() {
         if (isNaN(v) || v < 10) {
             showTimerError(v < 1 || isNaN(v) ? "Please enter a number first." : "Min. 10 seconds required.");
             $customSecs.focus();
-            return; // block start
+            return; 
         }
         totalSecs = Math.min(v, 600);
         hideTimerError();
@@ -440,13 +403,10 @@ function resetGame() {
     clearWordHistory();
 }
 
-/* ══════════════════════════════════════
-   LOCAL STORAGE — PERSISTENCE
-══════════════════════════════════════ */
-const LS_PREFS = "ws_prefs";      // theme + timer choice
-const LS_GAME = "ws_game";       // in-progress game snapshot
+// ───  LOCAL STORAGE — PERSISTENCE ───
+const LS_PREFS = "ws_prefs";      
+const LS_GAME = "ws_game";       
 
-/* Save lightweight preferences (always) */
 function savePrefs() {
     const selBtn = document.querySelector(".timer-opt-btn.sel");
     const timerSel = selBtn ? selBtn.dataset.secs : "30";
@@ -460,7 +420,6 @@ function savePrefs() {
     } catch (_) { }
 }
 
-/* Save full in-progress game snapshot */
 function saveGame() {
     if (!gameRunning) { clearSavedGame(); return; }
     const whRows = [...$whList.querySelectorAll(".wh-row")].map(r => ({
@@ -495,7 +454,6 @@ function clearSavedGame() {
     try { localStorage.removeItem(LS_GAME); } catch (_) { }
 }
 
-/* Restore preferences (theme + timer choice) */
 function restorePrefs() {
     try {
         const p = JSON.parse(localStorage.getItem(LS_PREFS));
@@ -524,7 +482,7 @@ function restorePrefs() {
     } catch (_) { }
 }
 
-/* Restore an in-progress game after refresh */
+// ───  LOCAL STORAGE — PROGRESS ───
 function restoreSavedGame() {
     let g;
     try { g = JSON.parse(localStorage.getItem(LS_GAME)); } catch (_) { return false; }
@@ -542,7 +500,7 @@ function restoreSavedGame() {
     bestStreak = g.bestStreak;
     hintRevealed = g.hintRevealed;
     gameRunning = true;
-    paused = true; // always resume paused so timer doesn't instantly tick
+    paused = true; 
 
     // Scoreboard
     $scCorrect.textContent = scoreCorrect;
@@ -564,14 +522,14 @@ function restoreSavedGame() {
     // Hint
     $hintBox.textContent = g.hintText || "Press \"Reveal Hint\" to get a clue…";
     if (hintRevealed) { $hintBox.classList.add("revealed"); $btnHint.textContent = "✓ Hint Used"; }
-    $btnHint.disabled = true; // locked while paused
+    $btnHint.disabled = true; 
 
     // Progress bar
     $progFill.style.width = g.progFill || "0%";
     $progText.textContent = g.progText || "0 words done";
     $progAcc.textContent = g.progAcc || "— acc";
 
-    // Restore typed input (will be shown but locked while paused)
+    // Restore typed input 
     $guess.value = g.guessValue || "";
 
     // Word history
@@ -615,9 +573,7 @@ function restoreSavedGame() {
     return true;
 }
 
-/* ══════════════════════════════════════
-   TIMER OPTION BUTTONS
-══════════════════════════════════════ */
+// ───  TIMER OPTION BUTTONS ───
 $timerOpts.forEach(btn => {
     btn.addEventListener("click", () => {
         $timerOpts.forEach(b => b.classList.remove("sel"));
@@ -629,9 +585,8 @@ $timerOpts.forEach(btn => {
                 totalSecs = Math.min(v, 600);
                 hideTimerError();
             } else if (!isNaN(v) && v > 0) {
-                // show error but don't update ring
                 showTimerError("Min. 10 seconds required.");
-                totalSecs = 10; // safe fallback for display
+                totalSecs = 10; 
             } else {
                 totalSecs = 45;
                 hideTimerError();
@@ -656,21 +611,18 @@ $customSecs.addEventListener("input", () => {
 
     if (raw === "" || isNaN(v)) {
         showTimerError("Please enter a valid number.");
-        // don't update ring / label
         return;
     }
 
     if (v < 10) {
         showTimerError("Min. 10 seconds required.");
-        // Still reflect what they typed in ring (capped at 1 for visual feedback)
         const display = Math.max(v, 1);
         $timerNum.textContent = display;
         $timerLabel.textContent = `${display}s selected`;
-        setRing(display, display); // full ring (red state will kick in once game starts)
+        setRing(display, display);
         return;
     }
 
-    // ✅ Valid value — update everything
     hideTimerError();
     totalSecs = Math.min(v, 600);
     $timerNum.textContent = totalSecs;
@@ -680,9 +632,7 @@ $customSecs.addEventListener("input", () => {
     savePrefs();
 });
 
-/* ══════════════════════════════════════
-   BUTTON EVENTS
-══════════════════════════════════════ */
+// ─── BUTTON EVENTS ───
 $btnStart.addEventListener("click", startGame);
 $btnSubmit.addEventListener("click", () => {
     if (!gameRunning || paused) return;
@@ -705,9 +655,7 @@ $btnHint.addEventListener("click", () => {
 });
 document.getElementById("res-close").addEventListener("click", () => { $resOverlay.classList.remove("active"); resetGame(); });
 
-/* ══════════════════════════════════════
-   THEME & MODAL
-══════════════════════════════════════ */
+// ─── THEME & MODAL ───
 $scheme.addEventListener("change", () => {
     document.documentElement.setAttribute("data-scheme", $scheme.value === "dark" ? "dark" : "");
     savePrefs();
@@ -717,9 +665,7 @@ $modalClose.addEventListener("click", () => $overlay.classList.remove("open"));
 $overlay.addEventListener("click", e => { if (e.target === $overlay) $overlay.classList.remove("open"); });
 document.addEventListener("keydown", e => { if (e.key === "Escape") $overlay.classList.remove("open"); });
 
-/* ══════════════════════════════════════
-   CONFETTI
-══════════════════════════════════════ */
+// ─── CONFETTI ───
 function confetti(count = 26) {
     const colors = ["#c1bff2", "#8b86e8", "#3c3782", "#f2bfd4", "#e85d6a", "#3daa60", "#fff", "#b8b4ff", "#f0c040"];
     for (let i = 0; i < count; i++) {
@@ -731,9 +677,7 @@ function confetti(count = 26) {
     }
 }
 
-/* ══════════════════════════════════════
-   PARTICLE SYSTEM
-══════════════════════════════════════ */
+// ─── PARTICLE SYSTEM ───
 function initParticles(canvas) {
     const ctx = canvas.getContext('2d');
     let W, H, particles;
