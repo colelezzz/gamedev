@@ -205,7 +205,6 @@ header{
   height:min(calc(100dvh - var(--app-pad-top) - var(--app-pad-bottom)), var(--shell-max-h));
 }
 
-/* ── FALLBACK: small/short viewports should scroll ── */
 @media(max-height:820px){
   html,body{overflow-x:hidden;overflow-y:auto;}
   .app{height:auto;min-height:100vh;}
@@ -220,12 +219,10 @@ header{
   .app{padding:var(--app-pad-top) 1.2rem var(--app-pad-bottom);}
 }
 
-/* ── FALLBACK: phone/tablet should scroll ── */
 @media(max-width:1024px){
   html,body{overflow-x:hidden;overflow-y:auto;}
   .app{height:auto;min-height:100vh;}
   .shell{height:auto;}
-  /* FIX: Remove overflow:hidden from cards on mobile so timer buttons aren't clipped */
   .card{height:auto;overflow:visible;}
   .board-card{max-height:none;overflow:visible;}
   .sidebar-card{height:auto;overflow:visible;}
@@ -584,9 +581,7 @@ header{
     box-shadow: 0 0 0 2px rgba(232,93,106,.25);
   }
 
-/* ════════════════════════════════════════════════
-   RESPONSIVE — TABLET (≤1024px)
-════════════════════════════════════════════════ */
+/* ──  RESPONSIVE — TABLET (≤1024px) ── */
 @media(max-width:1024px){
   header{padding:18px 28px 14px;gap:14px;}
   .btn-back{padding:13px 28px;font-size:16px;letter-spacing:1px;}
