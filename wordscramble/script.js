@@ -559,7 +559,7 @@ function restoreSavedGame() {
     $pausedVeil.classList.add("visible");
     setStatus("paused", "⏸ Game restored — press Resume to continue");
 
-    // Start the timer ticking (paused=true so it won't decrement yet)
+    // Start the timer ticking
     timerInterval = setInterval(() => {
         if (paused) return;
         timeLeft--;
