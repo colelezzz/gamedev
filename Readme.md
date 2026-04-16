@@ -102,7 +102,7 @@ mini-arcade/
 
 **Developed by:** `Coleen Isles`  
 **GitHub:** [@colelezzz](https://github.com/colelezzz)  
-**Live Demo:** `[mini arcade](https://mini-arcade-rouge.vercel.app/)`
+**Live Demo:** https://mini-arcade-rouge.vercel.app
 
 ---
 
