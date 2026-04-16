@@ -949,7 +949,7 @@ header {
   .nav-btn {
     position: fixed;
     top: auto;
-    bottom: 83px;
+    bottom: calc(83px + env(safe-area-inset-bottom));
     left: auto;
     right: auto;
     transform: none !important;
@@ -981,12 +981,12 @@ header {
     left: calc(50% + 96px);
   }
 
-  /* Play button — slimmer height */
+  /* Play button — with iOS safe area */
   .play-btn {
     font-size: 12px;
     padding: 10px 22px;
     letter-spacing: 1.5px;
-    bottom: 80px;
+    bottom: calc(80px + env(safe-area-inset-bottom));
     gap: 8px;
   }
 
@@ -1054,6 +1054,52 @@ header {
   .section[data-game="2"] .image-center img {
     height: 150px;
   }
+
+  /* ── Tighter wave ripple on large phones (≤767px) ── */
+  @keyframes wave-game1-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game1-background), 0 0 0 0px var(--game1-background);
+    }
+    40% {
+      box-shadow: 0 0 0 14px rgba(60, 41, 188, 0), 0 0 0 0px var(--game1-background);
+    }
+    80% {
+      box-shadow: 0 0 0 14px rgba(60, 41, 188, 0), 0 0 0 8px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 8px rgba(0, 230, 118, 0);
+    }
+  }
+
+  @keyframes wave-game2-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game2-background), 0 0 0 0px var(--game2-background);
+    }
+    40% {
+      box-shadow: 0 0 0 14px rgba(60, 41, 188, 0), 0 0 0 0px var(--game2-background);
+    }
+    80% {
+      box-shadow: 0 0 0 14px rgba(60, 41, 188, 0), 0 0 0 8px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 8px rgba(0, 230, 118, 0);
+    }
+  }
+
+  @keyframes wave-game3-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game3-background), 0 0 0 0px var(--game3-background);
+    }
+    40% {
+      box-shadow: 0 0 0 14px rgba(60, 41, 188, 0), 0 0 0 0px var(--game3-background);
+    }
+    80% {
+      box-shadow: 0 0 0 14px rgba(60, 41, 188, 0), 0 0 0 8px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 8px rgba(0, 230, 118, 0);
+    }
+  }
 }
 
 /* Small phones */
@@ -1085,12 +1131,11 @@ header {
     padding: 10px 10px;
   }
 
-  /* play-btn: bottom 75px, height ~46px → center 75+23=98. nav 40px → bottom 98-20=78px */
   .nav-btn {
     height: 40px;
     width: 40px;
     font-size: 14px;
-    bottom: 78px;
+    bottom: calc(78px + env(safe-area-inset-bottom));
   }
 
   #prevButton {
@@ -1137,7 +1182,7 @@ header {
     font-size: 11px;
     padding: 10px 20px;
     letter-spacing: 1.5px;
-    bottom: 75px;
+    bottom: calc(75px + env(safe-area-inset-bottom));
     gap: 7px;
   }
 
@@ -1159,6 +1204,52 @@ header {
 
   .section[data-game="2"] .image-center img {
     height: 125px;
+  }
+
+  /* ── Even tighter wave ripple on small phones (≤480px) ── */
+  @keyframes wave-game1-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game1-background), 0 0 0 0px var(--game1-background);
+    }
+    40% {
+      box-shadow: 0 0 0 10px rgba(60, 41, 188, 0), 0 0 0 0px var(--game1-background);
+    }
+    80% {
+      box-shadow: 0 0 0 10px rgba(60, 41, 188, 0), 0 0 0 6px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 6px rgba(0, 230, 118, 0);
+    }
+  }
+
+  @keyframes wave-game2-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game2-background), 0 0 0 0px var(--game2-background);
+    }
+    40% {
+      box-shadow: 0 0 0 10px rgba(60, 41, 188, 0), 0 0 0 0px var(--game2-background);
+    }
+    80% {
+      box-shadow: 0 0 0 10px rgba(60, 41, 188, 0), 0 0 0 6px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 6px rgba(0, 230, 118, 0);
+    }
+  }
+
+  @keyframes wave-game3-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game3-background), 0 0 0 0px var(--game3-background);
+    }
+    40% {
+      box-shadow: 0 0 0 10px rgba(60, 41, 188, 0), 0 0 0 0px var(--game3-background);
+    }
+    80% {
+      box-shadow: 0 0 0 10px rgba(60, 41, 188, 0), 0 0 0 6px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 6px rgba(0, 230, 118, 0);
+    }
   }
 }
 
@@ -1191,12 +1282,11 @@ header {
     padding: 8px 8px;
   }
 
-  /* play-btn: bottom 70px, height ~44px → center 70+22=92. nav 36px → bottom 92-18=74px */
   .nav-btn {
     height: 36px;
     width: 36px;
     font-size: 12px;
-    bottom: 74px;
+    bottom: calc(74px + env(safe-area-inset-bottom));
   }
 
   #prevButton {
@@ -1243,7 +1333,7 @@ header {
     font-size: 10px;
     padding: 10px 16px;
     letter-spacing: 1px;
-    bottom: 70px;
+    bottom: calc(70px + env(safe-area-inset-bottom));
     gap: 6px;
   }
 
@@ -1261,5 +1351,51 @@ header {
 
   .section[data-game="2"] .image-center img {
     height: 105px;
+  }
+
+  /* ── Minimal wave ripple on extra-small phones (≤360px) ── */
+  @keyframes wave-game1-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game1-background), 0 0 0 0px var(--game1-background);
+    }
+    40% {
+      box-shadow: 0 0 0 7px rgba(60, 41, 188, 0), 0 0 0 0px var(--game1-background);
+    }
+    80% {
+      box-shadow: 0 0 0 7px rgba(60, 41, 188, 0), 0 0 0 4px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 4px rgba(0, 230, 118, 0);
+    }
+  }
+
+  @keyframes wave-game2-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game2-background), 0 0 0 0px var(--game2-background);
+    }
+    40% {
+      box-shadow: 0 0 0 7px rgba(60, 41, 188, 0), 0 0 0 0px var(--game2-background);
+    }
+    80% {
+      box-shadow: 0 0 0 7px rgba(60, 41, 188, 0), 0 0 0 4px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 4px rgba(0, 230, 118, 0);
+    }
+  }
+
+  @keyframes wave-game3-effect {
+    0% {
+      box-shadow: 0 0 0 0px var(--game3-background), 0 0 0 0px var(--game3-background);
+    }
+    40% {
+      box-shadow: 0 0 0 7px rgba(60, 41, 188, 0), 0 0 0 0px var(--game3-background);
+    }
+    80% {
+      box-shadow: 0 0 0 7px rgba(60, 41, 188, 0), 0 0 0 4px rgba(0, 0, 0, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0px rgba(60, 41, 188, 0), 0 0 0 4px rgba(0, 230, 118, 0);
+    }
   }
 }
